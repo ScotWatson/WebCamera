@@ -13,6 +13,7 @@ let elemVideo;
 window.addEventListener("load", function () {
   if (cameraAPI) {
     document.body.style.backgroundColor = "black";
+    document.body.style.color = "white";
     let promiseCamera = navigator.mediaDevices.getUserMedia({video: true});
     promiseCamera.then(function(stream) {
       elemVideo = document.createElement("video");
