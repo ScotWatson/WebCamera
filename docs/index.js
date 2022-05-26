@@ -20,18 +20,20 @@ window.addEventListener("load", function () {
       elemVideo.srcObject = stream;
       document.body.appendChild(elemVideo);
       elemVideo.play();
-      width = elemVideo.videoWidth;
-      height = elemVideo.videoHeight;
-      myCanvas = document.createElement("canvas");
-      myCanvas.style.border = "none";
-      myCanvas.width = width;
-      myCanvas.height = height;
-      myCanvas.style.width = width + "px";
-      myCanvas.style.height = height + "px";
-      document.body.appendChild(myCanvas);
-      myCtx = myCanvas.getContext("2d");
-      myCtx.clearRect(0, 0, width, height);
-      requestAnimationFrame(parseFrame);
+      elemVideo.addEventListener("play", function () {
+        width = elemVideo.videoWidth;
+        height = elemVideo.videoHeight;
+        myCanvas = document.createElement("canvas");
+        myCanvas.style.border = "none";
+        myCanvas.width = width;
+        myCanvas.height = height;
+        myCanvas.style.width = width + "px";
+        myCanvas.style.height = height + "px";
+        document.body.appendChild(myCanvas);
+        myCtx = myCanvas.getContext("2d");
+        myCtx.clearRect(0, 0, width, height);
+        requestAnimationFrame(parseFrame);
+      });
     });
   } else {
     let textMsg = document.createTextNode("Camera API is not supported.");
