@@ -56,6 +56,7 @@ window.addEventListener("load", function () {
     testPerformance(200, 1000);
     testPerformance(500, 1000);
   }
+  samplePerformance();
   if (cameraAPI) {
     document.body.style.backgroundColor = "black";
     document.body.style.color = "white";
@@ -104,6 +105,7 @@ window.addEventListener("load", function () {
       resizeCanvasDisplay(width, height);
     }
     ctxHidden.drawImage(elemVideo, 0, 0, width, height);
+    console.log(0, 0, width, height);
     const data = ctxHidden.getImageData(0, 0, width, height);
     ctxDisplay.drawImage(elemCanvasHidden, 0, 0, width, height);
     requestAnimationFrame(parseFrame);
