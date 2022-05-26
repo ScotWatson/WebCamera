@@ -17,7 +17,9 @@ window.addEventListener("load", function () {
     let promiseCamera = navigator.mediaDevices.getUserMedia({video: true});
     promiseCamera.then(function(stream) {
       elemVideo = document.createElement("video");
+      elemVideo.style.display = "none";
       elemVideo.srcObject = stream;
+      document.body.appendChild(elemVideo);
       elemVideo.play();
       width = elemVideo.videoWidth;
       height = elemVideo.videoHeight;
