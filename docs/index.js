@@ -41,7 +41,7 @@ window.addEventListener("load", function () {
     function calc(acc, element, index, array) {
       acc[index] = element * vec2[index];
     }
-    return vec1.reduce(calc, new Uint16Array(vec.byteLength));
+    return vec1.reduce(calc, new Uint16Array(vec1.length));
   }
   function testPerformance(numDataSize, numIterations) {
     const vec1 = new Uint8Array(numDataSize);
