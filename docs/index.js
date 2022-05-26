@@ -13,84 +13,6 @@ let elemCanvasDisplay;
 let ctxDisplay;
 let elemVideo;
 window.addEventListener("load", function () {
-  // x: input data
-  function testTransform(x) {
-    return Math.exp(x);
-  }
-  // funcTransform: a function that takes a single input
-  function createUint8Table(funcTransform) {
-    function calc(element, index, array) {
-      element = Math.max(Math.min(funcTransform(index), 255), 0);
-    }
-    const ret = new Uint8Array(256);
-    ret.forEach(calc);
-    return ret;
-  }
-  // data: Uint8Array
-  // tblTransform: Uint8Array, must have length == 256
-  function transformUint8(data, tblTransform) {
-    function calc(element, index, array) {
-      return tblTransform[element];
-    }
-    return data.map(calc);
-  }
-  // vec1: Uint8Array
-  // vec2: Uint8Array
-  // vec1 & vec2 must be the same length
-  function dotProductUint8(vec1, vec2) {
-    function calc(acc, element, index, array) {
-      acc[index] = element * vec2[index];
-      return acc;
-    }
-    return vec1.reduce(calc, new Uint16Array(vec1.length));
-  }
-  // vec1: Uint8Array
-  // vec2: Array (of Number)
-  // vec1 & vec2 must be the same length
-  function dotProductUint8Float(vec1, vec2) {
-    function calc(acc, element, index, array) {
-      acc[index] = element * vec2[index];
-      return acc;
-    }
-    return vec1.reduce(calc, new Array(vec1.length));
-  }
-  function testPerformance(numDataSize, numIterations) {
-    const vec1 = new Uint8Array(numDataSize);
-    const vec2 = new Array(numDataSize);
-    let timeAcc = 0;
-    for (let i = 0; i < numIterations; ++i) {
-      crypto.getRandomValues(vec1);
-      for (let j = 0; j < numDataSize; ++j) {
-        vec2[j] = Math.random();
-      }
-      const timeStart = performance.now();
-      let result = dotProductUint8Float(vec1, vec2);
-      const timeEnd = performance.now();
-      const timeElapsed = (timeEnd - timeStart);
-      timeAcc += timeElapsed;
-    }
-    console.log("Data size: ", numDataSize, "  Avg time: ", (timeAcc / numIterations), "ms");
-  }
-  function calibratePerformance() {
-    function end() {
-      const timeEnd = performance.now();
-      const timeElapsed = (timeEnd - timeStart);
-      console.log("Ideal: 250 ms", " Actual: ", timeElapsed, "ms");
-    }
-    setTimeout(end, 250);
-    const timeStart = performance.now();
-  }
-  function samplePerformance() {
-    console.log("dotProductUint8Float");
-    testPerformance(1000, 1000);
-    testPerformance(2000, 1000);
-    testPerformance(5000, 1000);
-    testPerformance(10000, 1000);
-    testPerformance(20000, 1000);
-    testPerformance(50000, 1000);
-  }
-  samplePerformance();
-  calibratePerformance();
   if (cameraAPI) {
     document.body.style.backgroundColor = "black";
     document.body.style.color = "white";
@@ -142,9 +64,14 @@ window.addEventListener("load", function () {
     frameData = ctxHidden.getImageData(0, 0, width, height);
   }
   function parseFrameData() {
+    const thisData = frameData.data;
+    const vecIntensityMult = [ 0.2, 0.8, 0.1 ];
+    arrIntensity
     for (let i = 0; i < height; ++i) {
       for (let j = 0; j < width; ++j) {
-        frameData[4 * (i * width + j)];
+        const vec1 = thisData.slice( 4 * (i * width + j), 4 * (i * width + j) + 3 );
+        
+        const val = dotProductUint8Float(vec1, vecIntensityMult);
       }
     }
   }
