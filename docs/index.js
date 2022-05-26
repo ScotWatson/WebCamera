@@ -71,6 +71,15 @@ window.addEventListener("load", function () {
     }
     console.log("Data size: ", numDataSize, "  Avg time: ", (timeAcc / numIterations), "ms");
   }
+  function calibratePerformance() {
+    function end() {
+      const timeEnd = performance.now();
+      const timeElapsed = (timeEnd - timeStart);
+      console.log("Ideal: 250 ms", " Actual: ", (timeAcc / numIterations), "ms");
+    }
+    setTimeout(end, 250);
+    const timeStart = performance.now();
+  }
   function samplePerformance() {
     console.log("dotProductUint8Float");
     testPerformance(1000, 1000);
@@ -80,6 +89,7 @@ window.addEventListener("load", function () {
     testPerformance(20000, 1000);
     testPerformance(50000, 1000);
   }
+  calibratePerformance();
   samplePerformance();
   if (cameraAPI) {
     document.body.style.backgroundColor = "black";
