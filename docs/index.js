@@ -49,12 +49,12 @@ window.addEventListener("load", function () {
     console.log("Data size: ", numDataSize, "  Avg time: ", (timeAcc / numIterations), "ms");
   }
   function samplePerformance() {
-    testPerformance(100, 1000);
-    testPerformance(200, 1000);
-    testPerformance(500, 1000);
-    testPerformance(1000, 1000);
-    testPerformance(2000, 1000);
-    testPerformance(5000, 1000);
+    testPerformance(1000, 10000);
+    testPerformance(2000, 10000);
+    testPerformance(5000, 10000);
+    testPerformance(10000, 10000);
+    testPerformance(20000, 10000);
+    testPerformance(50000, 10000);
   }
   samplePerformance();
   if (cameraAPI) {
