@@ -67,7 +67,7 @@ window.addEventListener("load", function () {
       elemVideo.srcObject = stream;
       document.body.appendChild(elemVideo);
       elemVideo.play();
-      elemVideo.addEventListener("play", function () {
+      elemVideo.addEventListener("loadeddata", function () {
         elemCanvasHidden = document.createElement("canvas");
         elemCanvasHidden.style.display = "none";
         document.body.appendChild(elemCanvasHidden);
