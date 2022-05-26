@@ -72,6 +72,7 @@ window.addEventListener("load", function () {
     console.log("Data size: ", numDataSize, "  Avg time: ", (timeAcc / numIterations), "ms");
   }
   function samplePerformance() {
+    console.log("dotProductUint8Float");
     testPerformance(1000, 1000);
     testPerformance(2000, 1000);
     testPerformance(5000, 1000);
