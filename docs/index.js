@@ -89,8 +89,8 @@ window.addEventListener("load", function () {
     testPerformance(20000, 1000);
     testPerformance(50000, 1000);
   }
-  calibratePerformance();
   samplePerformance();
+  calibratePerformance();
   if (cameraAPI) {
     document.body.style.backgroundColor = "black";
     document.body.style.color = "white";
