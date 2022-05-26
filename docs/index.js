@@ -141,7 +141,7 @@ window.addEventListener("load", function () {
   function parseFrame() {
     captureFrame();
     resizeCanvasDisplay(width, height);
-    ctxDisplay.putImageData(frameData, 0, 0, width, height);
+    ctxDisplay.putImageData(frameData, 0, 0);
     requestAnimationFrame(parseFrame);
   }
   function resizeCanvasDisplay(width, height) {
@@ -149,8 +149,5 @@ window.addEventListener("load", function () {
     elemCanvasDisplay.height = height;
     elemCanvasDisplay.style.width = width + "px";
     elemCanvasDisplay.style.height = height + "px";
-  }
-  function recalcCanvasDisplay() {
-    ctxDisplay.drawImage(elemCanvasHidden, 0, 0, width, height);
   }
 });
