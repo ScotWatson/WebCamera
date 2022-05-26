@@ -9,27 +9,37 @@ let width;
 let height;
 let myCanvas;
 let myCtx;
+let elemVideo;
 window.addEventListener("load", function () {
   if (cameraAPI) {
     document.body.style.backgroundColor = "black";
-    myCanvas = document.createElement("canvas");
-    myCanvas.style.border = "none";
-    document.body.appendChild(myCanvas);
-    myCtx = myCanvas.getContext("2d");
-    myCtx.clearRect(0, 0, width, height);
     window.addEventListener("resize", resize);
     let promiseCamera = navigator.mediaDevices.getUserMedia({video: true});
     promiseCamera.then(function(stream) {
-      let elemVideo = document.createElement("video");
+      elemVideo = document.createElement("video");
       elemVideo.srcObject = stream;
-      document.body.appendChild(elemVideo);
       elemVideo.play();
-      console.log("playing");
+      width = elemVideo.videoWidth;
+      height = elemVideo.videoHeight;
+      myCanvas = document.createElement("canvas");
+      myCanvas.style.border = "none";
+      myCanvas.width = width;
+      myCanvas.height = height;
+      myCanvas.style.width = width + "px";
+      myCanvas.style.height = height + "px";
+      document.body.appendChild(myCanvas);
+      myCtx = myCanvas.getContext("2d");
+      myCtx.clearRect(0, 0, width, height);
+      requestAnimationFrame(parseFrame);
     });
     resize();
   } else {
     let textMsg = document.createTextNode("Camera API is not supported.");
     document.body.appendChild(textMsg);
+  }
+  function parseFrame() {
+    myCtx.drawImage(elemVideo, 0, 0, width, height);
+    requestAnimationFrame(parseFrame);
   }
 });
 
