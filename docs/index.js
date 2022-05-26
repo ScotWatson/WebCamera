@@ -40,9 +40,9 @@ window.addEventListener("load", function () {
     let timeAcc = 0;
     for (let i = 0; i < numIterations; ++i) {
       crypto.getRandomValues(data);
-      const timeStart = Performance.now();
+      const timeStart = performance.now();
       let result = transformUint8(data, tblTransform);
-      const timeEnd = Performance.now();
+      const timeEnd = performance.now();
       const timeElapsed = (timeEnd - timeStart);
       timeAcc += timeElapsed;
     }
