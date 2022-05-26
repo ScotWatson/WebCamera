@@ -13,7 +13,6 @@ let elemVideo;
 window.addEventListener("load", function () {
   if (cameraAPI) {
     document.body.style.backgroundColor = "black";
-    window.addEventListener("resize", resize);
     let promiseCamera = navigator.mediaDevices.getUserMedia({video: true});
     promiseCamera.then(function(stream) {
       elemVideo = document.createElement("video");
@@ -34,7 +33,6 @@ window.addEventListener("load", function () {
       myCtx.clearRect(0, 0, width, height);
       requestAnimationFrame(parseFrame);
     });
-    resize();
   } else {
     let textMsg = document.createTextNode("Camera API is not supported.");
     document.body.appendChild(textMsg);
