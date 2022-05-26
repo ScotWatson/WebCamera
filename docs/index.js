@@ -40,6 +40,7 @@ window.addEventListener("load", function () {
   function dotProductUint8(vec1, vec2) {
     function calc(acc, element, index, array) {
       acc[index] = element * vec2[index];
+      return acc;
     }
     return vec1.reduce(calc, new Uint16Array(vec1.length));
   }
