@@ -44,15 +44,27 @@ window.addEventListener("load", function () {
     }
     return vec1.reduce(calc, new Uint16Array(vec1.length));
   }
+  // vec1: Uint8Array
+  // vec2: Array (of Number)
+  // vec1 & vec2 must be the same length
+  function dotProductUint8Float(vec1, vec2) {
+    function calc(acc, element, index, array) {
+      acc[index] = element * vec2[index];
+      return acc;
+    }
+    return vec1.reduce(calc, new Array(vec1.length));
+  }
   function testPerformance(numDataSize, numIterations) {
     const vec1 = new Uint8Array(numDataSize);
-    const vec2 = new Uint8Array(numDataSize);
+    const vec2 = new Array(numDataSize);
     let timeAcc = 0;
     for (let i = 0; i < numIterations; ++i) {
       crypto.getRandomValues(vec1);
-      crypto.getRandomValues(vec2);
+      for (let j = 0; j < numDataSize; ++j) {
+        vec2[j] = Math.random();
+      }
       const timeStart = performance.now();
-      let result = dotProductUint8(vec1, vec2);
+      let result = dotProductUint8Float(vec1, vec2);
       const timeEnd = performance.now();
       const timeElapsed = (timeEnd - timeStart);
       timeAcc += timeElapsed;
@@ -100,7 +112,8 @@ window.addEventListener("load", function () {
     let textMsg = document.createTextNode("Camera API is not supported.");
     document.body.appendChild(textMsg);
   }
-  function parseFrame() {
+  let frameData;
+  function captureFrame() {
     let resized = false;
     if (width != elemVideo.videoWidth) {
       width = elemVideo.videoWidth;
@@ -113,12 +126,21 @@ window.addEventListener("load", function () {
     if (resized) {
       elemCanvasHidden.width = width;
       elemCanvasHidden.height = height;
-      resizeCanvasDisplay(width, height);
     }
     ctxHidden.drawImage(elemVideo, 0, 0, width, height);
-    console.log(0, 0, width, height);
-    const data = ctxHidden.getImageData(0, 0, width, height);
-    ctxDisplay.drawImage(elemCanvasHidden, 0, 0, width, height);
+    frameData = ctxHidden.getImageData(0, 0, width, height);
+  }
+  function parseFrameData() {
+    for (let i = 0; i < height; ++i) {
+      for (let j = 0; j < width; ++j) {
+        frameData[4 * (i * width + j)];
+      }
+    }
+  }
+  function parseFrame() {
+    captureFrame();
+    resizeCanvasDisplay(width, height);
+    ctxDisplay.putImageData(frameData, 0, 0, width, height);
     requestAnimationFrame(parseFrame);
   }
   function resizeCanvasDisplay(width, height) {
