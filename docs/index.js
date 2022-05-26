@@ -34,6 +34,7 @@ window.addEventListener("load", function () {
     document.body.appendChild(textMsg);
   }
   function parseFrame() {
+    console.log("frame");
     let resized = false;
     if (width != elemVideo.videoWidth) {
       width = elemVideo.videoWidth;
