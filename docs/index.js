@@ -44,31 +44,3 @@ window.addEventListener("load", function () {
     requestAnimationFrame(parseFrame);
   }
 });
-
-function resize() {
-  width = window.innerWidth;
-  height = window.innerHeight;
-  myCanvas.width = width;
-  myCanvas.height = height;
-  myCanvas.style.width = width + "px";
-  myCanvas.style.height = height + "px";
-}
-
-function updateCanvas(evt) {
-  myCtx.clearRect(0, 0, width, height);
-  for (let touch of evt.touches) {
-    if (touch.force) {
-      if (touch.force == 0) {
-        force = 255;
-      } else {
-        force = Math.floor(255 * touch.force);
-      }
-    } else {
-      force = 255;
-    }
-    myCtx.fillStyle = "rgb(" + force + ", " + force + ", " + force + ")";
-    myCtx.beginPath();
-    myCtx.ellipse(touch.clientX, touch.clientY, 50, 50, 0, 0, 2 * Math.PI);
-    myCtx.fill();
-  }
-}
