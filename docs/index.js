@@ -30,7 +30,7 @@ window.addEventListener("load", function () {
         requestAnimationFrame(parseFrame);
       });
     });
-    promiseCamera.then(function(error) {
+    promiseCamera.catch(function(error) {
       let textMsg = document.createTextNode(error.message);
       document.body.appendChild(textMsg);
     });
