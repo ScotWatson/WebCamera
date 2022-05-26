@@ -75,7 +75,7 @@ window.addEventListener("load", function () {
     function end() {
       const timeEnd = performance.now();
       const timeElapsed = (timeEnd - timeStart);
-      console.log("Ideal: 250 ms", " Actual: ", (timeAcc / numIterations), "ms");
+      console.log("Ideal: 250 ms", " Actual: ", timeElapsed, "ms");
     }
     setTimeout(end, 250);
     const timeStart = performance.now();
