@@ -29,6 +29,10 @@ window.addEventListener("load", function () {
         requestAnimationFrame(parseFrame);
       });
     });
+    promiseCamera.then(function(error) {
+      let textMsg = document.createTextNode(error.message);
+      document.body.appendChild(textMsg);
+    });
   } else {
     let textMsg = document.createTextNode("Camera API is not supported.");
     document.body.appendChild(textMsg);
