@@ -27,21 +27,31 @@ window.addEventListener("load", function () {
     return ret;
   }
   // data: Uint8Array
-  // tblTransform: Uint8Array
+  // tblTransform: Uint8Array, must have length == 256
   function transformUint8(data, tblTransform) {
     function calc(element, index, array) {
       return tblTransform[element];
     }
     return data.map(calc);
   }
+  // vec1: Uint8Array
+  // vec2: Uint8Array
+  // vec1 & vec2 must be the same length
+  function dotProductUint8(vec1, vec2) {
+    function calc(acc, element, index, array) {
+      acc[index] = element * vec2[index];
+    }
+    return vec1.reduce(calc, new Uint16Array(vec.byteLength));
+  }
   function testPerformance(numDataSize, numIterations) {
-    const tblTransform = createUint8Table(testTransform);
-    const data = new Uint8Array(numDataSize);
+    const vec1 = new Uint8Array(numDataSize);
+    const vec2 = new Uint8Array(numDataSize);
     let timeAcc = 0;
     for (let i = 0; i < numIterations; ++i) {
-      crypto.getRandomValues(data);
+      crypto.getRandomValues(vec1);
+      crypto.getRandomValues(vec2);
       const timeStart = performance.now();
-      let result = transformUint8(data, tblTransform);
+      let result = dotProductUint8(vec1, vec2);
       const timeEnd = performance.now();
       const timeElapsed = (timeEnd - timeStart);
       timeAcc += timeElapsed;
@@ -49,12 +59,12 @@ window.addEventListener("load", function () {
     console.log("Data size: ", numDataSize, "  Avg time: ", (timeAcc / numIterations), "ms");
   }
   function samplePerformance() {
-    testPerformance(1000, 10000);
-    testPerformance(2000, 10000);
-    testPerformance(5000, 10000);
-    testPerformance(10000, 10000);
-    testPerformance(20000, 10000);
-    testPerformance(50000, 10000);
+    testPerformance(1000, 1000);
+    testPerformance(2000, 1000);
+    testPerformance(5000, 1000);
+    testPerformance(10000, 1000);
+    testPerformance(20000, 1000);
+    testPerformance(50000, 1000);
   }
   samplePerformance();
   if (cameraAPI) {
