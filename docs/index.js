@@ -21,14 +21,8 @@ window.addEventListener("load", function () {
       document.body.appendChild(elemVideo);
       elemVideo.play();
       elemVideo.addEventListener("play", function () {
-        width = elemVideo.videoWidth;
-        height = elemVideo.videoHeight;
         myCanvas = document.createElement("canvas");
         myCanvas.style.border = "none";
-        myCanvas.width = width;
-        myCanvas.height = height;
-        myCanvas.style.width = width + "px";
-        myCanvas.style.height = height + "px";
         document.body.appendChild(myCanvas);
         myCtx = myCanvas.getContext("2d");
         myCtx.clearRect(0, 0, width, height);
@@ -40,6 +34,21 @@ window.addEventListener("load", function () {
     document.body.appendChild(textMsg);
   }
   function parseFrame() {
+    let resized = false;
+    if (width != elemVideo.videoWidth) {
+      width = elemVideo.videoWidth;
+      resized = true;
+    }
+    if (height != elemVideo.videoHeight) {
+      height = elemVideo.videoHeight;
+      resized = true;
+    }
+    if (resized) {
+      myCanvas.width = width;
+      myCanvas.height = height;
+      myCanvas.style.width = width + "px";
+      myCanvas.style.height = height + "px";
+    }
     myCtx.drawImage(elemVideo, 0, 0, width, height);
     requestAnimationFrame(parseFrame);
   }
