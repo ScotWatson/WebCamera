@@ -20,7 +20,7 @@ window.addEventListener("load", function () {
   // funcTransform: a function that takes a single input
   function createUint8Table(funcTransform) {
     function calc(element, index, array) {
-      element = funcTransform(index);
+      element = Math.max(Math.min(funcTransform(index), 255), 0);
     }
     const ret = new Uint8Array(256);
     ret.forEach(calc);
