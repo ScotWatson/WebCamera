@@ -85,7 +85,7 @@ window.addEventListener("load", function () {
     for (let i = 0; i < height; ++i) {
       for (let j = 0; j < width; ++j) {
         const numIndex = (i * width + j);
-        const vecColor = thisData.slice( 4 * numIndex, 4 * numIndex + 3 );
+        const vecColor = thisData.subarray( 4 * numIndex, 4 * numIndex + 3 );
         const vecColorLinear = transformUint8Float64(vecColor, tblGammaLinear);
         arrIntensity[numIndex] = dotProductUint8Float64(vecColorLinear, vecIntensityMult);
       }
