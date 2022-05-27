@@ -113,12 +113,38 @@ function dotProductUint8Float64(vec1, vec2) {
   return vec1.reduce(calc, new Float64Array(1));
 }
 
-// 
+// Calculates the matrix product
+// rows: Uint8Array
+// numCols: length of each row in rows
+// cols: Uint8Array
+// numRows: length of each column in cols
+// Returns: Uint16Array; length == rows.length * cols.length / (numRowsCols * numRowsCols)
+function matrixProductUint8Uint8(rows, cols, numColsRows) {
+  const numRows = (rows.length / numColsRows);
+  arrRows = new Array(numRows);
+  for (let i = 0; i < (rows.length / numColsRows); ++i) {
+    arrRows[i] = rows.slice(numColsRows * i, numColsRows * (i + 1));
+  }
+  const numCols = (cols.length / numColsRows);
+  arrCols = new Array(numCols);
+  for (let i = 0; i < (cols.length / numColsRows); ++i) {
+    arrCols[i] = rows.slice(numColsRows * i, numColsRows * (i + 1));
+  }
+  let ret = new Uint16Array(arrRows.length * arrCols.length);
+  for (let i = 0; i < arrRows.length; ++i) {
+    for (let j = 0; j < arrCols.length; ++j) {
+      ret[arrCols.length * i + j] = dotProductUint8Uint8(arrRows[i], arrCols[j]);
+    }
+  }
+  return ret;
+}
+
+// Test performance of dotProductUint8Float64
 // numDataSize:
 // numIterations:
-function testPerformance(numDataSize, numIterations) {
+function testPerformanceDotProductUint8Float64(numDataSize, numIterations) {
   const vec1 = new Uint8Array(numDataSize);
-  const vec2 = new Array(numDataSize);
+  const vec2 = new Float64Array(numDataSize);
   let timeAcc = 0;
   for (let i = 0; i < numIterations; ++i) {
     crypto.getRandomValues(vec1);
@@ -134,24 +160,39 @@ function testPerformance(numDataSize, numIterations) {
   console.log("Data size: ", numDataSize, "  Avg time: ", (timeAcc / numIterations), "ms");
 }
 
-//
-function calibratePerformance() {
-  function end() {
+// Test performance of matrixProductUint8Uint8
+// numDataSize:
+// numIterations:
+function testPerformanceMatrixProductUint8Uint8(numDataSize, numIterations) {
+  const vec1 = new Uint8Array(numDataSize * numDataSize);
+  const vec2 = new Uint8Array(numDataSize * numDataSize);
+  let timeAcc = 0;
+  for (let i = 0; i < numIterations; ++i) {
+    crypto.getRandomValues(vec1);
+    crypto.getRandomValues(vec2);
+    const timeStart = performance.now();
+    let result = matrixProductUint8Uint8(vec1, vec2);
     const timeEnd = performance.now();
     const timeElapsed = (timeEnd - timeStart);
-    console.log("Ideal: 250 ms", " Actual: ", timeElapsed, "ms");
+    timeAcc += timeElapsed;
   }
-  setTimeout(end, 250);
-  const timeStart = performance.now();
+  console.log("Data size: ", numDataSize, "  Avg time: ", (timeAcc / numIterations), "ms");
 }
+
 function samplePerformance() {
   console.log("dotProductUint8Float64");
-  testPerformance(1000, 1000);
-  testPerformance(2000, 1000);
-  testPerformance(5000, 1000);
-  testPerformance(10000, 1000);
-  testPerformance(20000, 1000);
-  testPerformance(50000, 1000);
+  testPerformanceDotProductUint8Float64(1000, 1000);
+  testPerformanceDotProductUint8Float64(2000, 1000);
+  testPerformanceDotProductUint8Float64(5000, 1000);
+  testPerformanceDotProductUint8Float64(10000, 1000);
+  testPerformanceDotProductUint8Float64(20000, 1000);
+  testPerformanceDotProductUint8Float64(50000, 1000);
+  console.log("matrixProductUint8Uint8");
+  testPerformanceMatrixProductUint8Uint8(100, 100);
+  testPerformanceMatrixProductUint8Uint8(200, 100);
+  testPerformanceMatrixProductUint8Uint8(500, 100);
+  testPerformanceMatrixProductUint8Uint8(1000, 100);
+  testPerformanceMatrixProductUint8Uint8(2000, 100);
+  testPerformanceMatrixProductUint8Uint8(5000, 100);
 }
 samplePerformance();
-calibratePerformance();
