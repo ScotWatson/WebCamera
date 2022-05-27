@@ -130,6 +130,7 @@ function matrixProductUint8Uint8(rows, cols, numColsRows) {
   for (let i = 0; i < (cols.length / numColsRows); ++i) {
     arrCols[i] = rows.subarray(numColsRows * i, numColsRows * (i + 1));
   }
+  return;
   let ret = new Uint16Array(arrRows.length * arrCols.length);
   for (let i = 0; i < arrRows.length; ++i) {
     for (let j = 0; j < arrCols.length; ++j) {
@@ -188,11 +189,11 @@ function samplePerformance() {
   testPerformanceDotProductUint8Float64(20000, 1000);
   testPerformanceDotProductUint8Float64(50000, 1000);
   console.log("matrixProductUint8Uint8");
-  testPerformanceMatrixProductUint8Uint8(10, 10);
-  testPerformanceMatrixProductUint8Uint8(20, 10);
-  testPerformanceMatrixProductUint8Uint8(30, 10);
-  testPerformanceMatrixProductUint8Uint8(40, 10);
-  testPerformanceMatrixProductUint8Uint8(50, 10);
   testPerformanceMatrixProductUint8Uint8(100, 10);
+  testPerformanceMatrixProductUint8Uint8(200, 10);
+  testPerformanceMatrixProductUint8Uint8(300, 10);
+  testPerformanceMatrixProductUint8Uint8(400, 10);
+  testPerformanceMatrixProductUint8Uint8(500, 10);
+  testPerformanceMatrixProductUint8Uint8(1000, 10);
 }
 samplePerformance();
