@@ -126,7 +126,7 @@ function testPerformance(numDataSize, numIterations) {
       vec2[j] = Math.random();
     }
     const timeStart = performance.now();
-    let result = dotProductUint8Float(vec1, vec2);
+    let result = dotProductUint8Float64(vec1, vec2);
     const timeEnd = performance.now();
     const timeElapsed = (timeEnd - timeStart);
     timeAcc += timeElapsed;
@@ -145,7 +145,7 @@ function calibratePerformance() {
   const timeStart = performance.now();
 }
 function samplePerformance() {
-  console.log("dotProductUint8Float");
+  console.log("dotProductUint8Float64");
   testPerformance(1000, 1000);
   testPerformance(2000, 1000);
   testPerformance(5000, 1000);
