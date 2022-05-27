@@ -78,39 +78,39 @@ function transformUint8Float64(input, tblTransform) {
 // vec1: Uint8Array
 // vec2: Uint8Array
 // vec1 & vec2 must be the same length
-// Returns: Uint16Array (same length as the input)
+// Returns: Uint16Array (length == 1)
 function dotProductUint8Uint8(vec1, vec2) {
   function calc(acc, element, index, array) {
-    acc[index] = element * vec2[index];
+    acc[0] += element * vec2[index];
     return acc;
   }
-  return vec1.reduce(calc, new Uint16Array(vec1.length));
+  return vec1.reduce(calc, new Uint16Array(1));
 }
 
 // Calculates the dot product of vec1 & vec2
 // vec1: Uint8Array
 // vec2: Float32Array
 // vec1 & vec2 must be the same length
-// Returns: Float32Array (same length as the input)
+// Returns: Float32Array (length == 1)
 function dotProductUint8Float32(vec1, vec2) {
   function calc(acc, element, index, array) {
-    acc[index] = element * vec2[index];
+    acc[0] += element * vec2[index];
     return acc;
   }
-  return vec1.reduce(calc, new Float32Array(vec1.length));
+  return vec1.reduce(calc, new Float32Array(1));
 }
 
 // Calculates the dot product of vec1 & vec2
 // vec1: Uint8Array
 // vec2: Float64Array
 // vec1 & vec2 must be the same length
-// Returns: Float64Array (same length as the input)
+// Returns: Float64Array (length == 1)
 function dotProductUint8Float64(vec1, vec2) {
   function calc(acc, element, index, array) {
-    acc[index] = element * vec2[index];
+    acc[0] += element * vec2[index];
     return acc;
   }
-  return vec1.reduce(calc, new Float64Array(vec1.length));
+  return vec1.reduce(calc, new Float64Array(1));
 }
 
 // 
