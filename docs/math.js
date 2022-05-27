@@ -182,7 +182,7 @@ function testPerformanceMatrixProductUint8Uint8(numDataSize, numIterations) {
     getRandomValues(matrix1);
     getRandomValues(matrix2);
     const timeRandomEnd = performance.now();
-    const timeRandomElapsed = (timeEnd - timeStart) / 2;
+    const timeRandomElapsed = (timeRandomEnd - timeRandomStart) / 2;
     timeRandomAcc += timeRandomElapsed;
     const timeStart = performance.now();
     let result = matrixProductUint8Uint8(matrix1, matrix2, numDataSize);
