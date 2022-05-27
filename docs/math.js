@@ -161,6 +161,14 @@ function testPerformanceDotProductUint8Float64(numDataSize, numIterations) {
   console.log("Data size: ", numDataSize, "  Avg time: ", (timeAcc / numIterations), "ms");
 }
 
+function getRandomValues(typedArray) {
+  const maxLength = 65536 / typedArray.BYTES_PER_ELEMENT;
+  const numLoops = typedArray.length / maxLength;
+  for (let i = 0; i < numLoops; ++i) {
+    crypto.getRandomValues(typedArray.subarray(maxLength * i, maxLength * (i + 1)));
+  }
+}
+
 // Test performance of matrixProductUint8Uint8
 // numDataSize:
 // numIterations:
@@ -169,8 +177,8 @@ function testPerformanceMatrixProductUint8Uint8(numDataSize, numIterations) {
   const matrix2 = new Uint8Array(numDataSize * numDataSize);
   let timeAcc = 0;
   for (let i = 0; i < numIterations; ++i) {
-    crypto.getRandomValues(matrix1);
-    crypto.getRandomValues(matrix2);
+    getRandomValues(matrix1);
+    getRandomValues(matrix2);
     const timeStart = performance.now();
     let result = matrixProductUint8Uint8(matrix1, matrix2, numDataSize);
     const timeEnd = performance.now();
