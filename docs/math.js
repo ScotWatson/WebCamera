@@ -179,8 +179,8 @@ function testPerformanceMatrixProductUint8Uint8(numDataSize, numIterations) {
   let timeAcc = 0;
   for (let i = 0; i < numIterations; ++i) {
     const timeRandomStart = performance.now();
-    getRandomValues(matrix1);
-    getRandomValues(matrix2);
+//    getRandomValues(matrix1);
+//    getRandomValues(matrix2);
     const timeRandomEnd = performance.now();
     const timeRandomElapsed = (timeRandomEnd - timeRandomStart) / 2;
     timeRandomAcc += timeRandomElapsed;
