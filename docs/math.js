@@ -164,14 +164,14 @@ function testPerformanceDotProductUint8Float64(numDataSize, numIterations) {
 // numDataSize:
 // numIterations:
 function testPerformanceMatrixProductUint8Uint8(numDataSize, numIterations) {
-  const vec1 = new Uint8Array(numDataSize * numDataSize);
-  const vec2 = new Uint8Array(numDataSize * numDataSize);
+  const matrix1 = new Uint8Array(numDataSize * numDataSize);
+  const matrix2 = new Uint8Array(numDataSize * numDataSize);
   let timeAcc = 0;
   for (let i = 0; i < numIterations; ++i) {
     crypto.getRandomValues(vec1);
     crypto.getRandomValues(vec2);
     const timeStart = performance.now();
-    let result = matrixProductUint8Uint8(vec1, vec2);
+    let result = matrixProductUint8Uint8(matrix1, matrix2, numDataSize);
     const timeEnd = performance.now();
     const timeElapsed = (timeEnd - timeStart);
     timeAcc += timeElapsed;
