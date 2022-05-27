@@ -7,8 +7,11 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 function testTransform(x) {
   return Math.exp(x);
 }
-// funcTransform: a function that takes a single input
-function createUint8Table(funcTransform) {
+
+// Memoization function - Calculates for all integers 0 to 255 (inclusive)
+// funcTransform: A function that takes a single argument (Number) and returns (Number)
+// Returns: Uint8Array (length == 256)
+function createUint8Uint8Table(funcTransform) {
   function calc(element, index, array) {
     element = Math.max(Math.min(funcTransform(index), 255), 0);
   }
@@ -16,34 +19,103 @@ function createUint8Table(funcTransform) {
   ret.forEach(calc);
   return ret;
 }
-// data: Uint8Array
+
+// Memoization function - Calculates for all integers 0 to 255 (inclusive)
+// funcTransform: A function that takes a single argument (Number) and returns (Number)
+// Returns: Float32Array (length == 256), 1 kiB
+function createUint8Float32Table(funcTransform) {
+  function calc(element, index, array) {
+    element = funcTransform(index);
+  }
+  const ret = new Float32Array(256);
+  ret.forEach(calc);
+  return ret;
+}
+
+// Memoization function - Calculates for all integers 0 to 255 (inclusive)
+// funcTransform: A function that takes a single argument (Number) and returns (Number)
+// Returns: Float64Array (length == 256)
+function createUint8Float64Table(funcTransform) {
+  function calc(element, index, array) {
+    element = funcTransform(index);
+  }
+  const ret = new Float64Array(256);
+  ret.forEach(calc);
+  return ret;
+}
+
+// Uses tblTransform to transform each element of input
+// input: Uint8Array
 // tblTransform: Uint8Array, must have length == 256
-function transformUint8(data, tblTransform) {
+function transformUint8Uint8(input, tblTransform) {
   function calc(element, index, array) {
     return tblTransform[element];
   }
-  return data.map(calc);
+  return input.map(calc);
 }
+
+// Uses tblTransform to transform each element of input
+// data: Uint8Array
+// tblTransform: Float32Array, must have length == 256
+function transformUint8Float32(input, tblTransform) {
+  function calc(element, index, array) {
+    return tblTransform[element];
+  }
+  return input.map(calc);
+}
+
+// Uses tblTransform to transform each element of input
+// data: Uint8Array
+// tblTransform: Float64Array, must have length == 256
+function transformUint8Float64(input, tblTransform) {
+  function calc(element, index, array) {
+    return tblTransform[element];
+  }
+  return input.map(calc);
+}
+
+// Calculates the dot product of vec1 & vec2
 // vec1: Uint8Array
 // vec2: Uint8Array
 // vec1 & vec2 must be the same length
-function dotProductUint8(vec1, vec2) {
+// Returns: Uint16Array (same length as the input)
+function dotProductUint8Uint8(vec1, vec2) {
   function calc(acc, element, index, array) {
     acc[index] = element * vec2[index];
     return acc;
   }
   return vec1.reduce(calc, new Uint16Array(vec1.length));
 }
+
+// Calculates the dot product of vec1 & vec2
 // vec1: Uint8Array
-// vec2: Array (of Number)
+// vec2: Float32Array
 // vec1 & vec2 must be the same length
-function dotProductUint8Float(vec1, vec2) {
+// Returns: Float32Array (same length as the input)
+function dotProductUint8Float32(vec1, vec2) {
   function calc(acc, element, index, array) {
     acc[index] = element * vec2[index];
     return acc;
   }
-  return vec1.reduce(calc, new Array(vec1.length));
+  return vec1.reduce(calc, new Float32Array(vec1.length));
 }
+
+// Calculates the dot product of vec1 & vec2
+// vec1: Uint8Array
+// vec2: Float64Array
+// vec1 & vec2 must be the same length
+// Returns: Float64Array (same length as the input)
+function dotProductUint8Float64(vec1, vec2) {
+  function calc(acc, element, index, array) {
+    acc[index] = element * vec2[index];
+    return acc;
+  }
+  return vec1.reduce(calc, new Float64Array(vec1.length));
+}
+
+// 
+// numDataSize:
+// numIterations:
 function testPerformance(numDataSize, numIterations) {
   const vec1 = new Uint8Array(numDataSize);
   const vec2 = new Array(numDataSize);
@@ -61,6 +133,8 @@ function testPerformance(numDataSize, numIterations) {
   }
   console.log("Data size: ", numDataSize, "  Avg time: ", (timeAcc / numIterations), "ms");
 }
+
+//
 function calibratePerformance() {
   function end() {
     const timeEnd = performance.now();
