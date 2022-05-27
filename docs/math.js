@@ -168,8 +168,8 @@ function testPerformanceMatrixProductUint8Uint8(numDataSize, numIterations) {
   const matrix2 = new Uint8Array(numDataSize * numDataSize);
   let timeAcc = 0;
   for (let i = 0; i < numIterations; ++i) {
-    crypto.getRandomValues(vec1);
-    crypto.getRandomValues(vec2);
+    crypto.getRandomValues(matrix1);
+    crypto.getRandomValues(matrix2);
     const timeStart = performance.now();
     let result = matrixProductUint8Uint8(matrix1, matrix2, numDataSize);
     const timeEnd = performance.now();
