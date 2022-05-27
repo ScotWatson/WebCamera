@@ -75,12 +75,12 @@ window.addEventListener("load", function () {
   }
   const tblGammaLinear = createUint8Float64Table(sRGB_to_linear);
   let arrIntensity;
+  const vecIntensityMult = new Float64Array(3);
+  vecIntensityMult[0] = 0.2;
+  vecIntensityMult[1] = 0.7;
+  vecIntensityMult[2] = 0.1;
   function parseFrameData() {
     const thisData = frameData.data;
-    const vecIntensityMult = new Float64Array(3);
-    vecIntensityMult[0] = 0.2;
-    vecIntensityMult[1] = 0.7;
-    vecIntensityMult[2] = 0.1;
     arrIntensity = new Float64Array(width * height);
     for (let i = 0; i < height; ++i) {
       for (let j = 0; j < width; ++j) {
@@ -94,7 +94,7 @@ window.addEventListener("load", function () {
   function parseFrame() {
     captureFrame();
     const start_time = performance.now();
-    parseFrameData();
+//    parseFrameData();
     const end_time = performance.now();
     console.log("Calc time: ", end_time - start_time, "ms");
     resizeCanvasDisplay(width, height);
