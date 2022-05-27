@@ -122,14 +122,16 @@ function dotProductUint8Float64(vec1, vec2) {
 function matrixProductUint8Uint8(rows, cols, numColsRows) {
   const numRows = (rows.length / numColsRows);
   arrRows = new Array(numRows);
-  for (let i = 0; i < (rows.length / numColsRows); ++i) {
+/*  for (let i = 0; i < (rows.length / numColsRows); ++i) {
     arrRows[i] = rows.subarray(numColsRows * i, numColsRows * (i + 1));
   }
+*/
   const numCols = (cols.length / numColsRows);
   arrCols = new Array(numCols);
-  for (let i = 0; i < (cols.length / numColsRows); ++i) {
+/*  for (let i = 0; i < (cols.length / numColsRows); ++i) {
     arrCols[i] = rows.subarray(numColsRows * i, numColsRows * (i + 1));
   }
+*/
   return;
   let ret = new Uint16Array(arrRows.length * arrCols.length);
   for (let i = 0; i < arrRows.length; ++i) {
@@ -210,6 +212,5 @@ function samplePerformance() {
   testPerformanceMatrixProductUint8Uint8(200, 1000);
   testPerformanceMatrixProductUint8Uint8(500, 1000);
   testPerformanceMatrixProductUint8Uint8(1000, 1000);
-  testPerformanceMatrixProductUint8Uint8(2000, 1000);
 }
 samplePerformance();
