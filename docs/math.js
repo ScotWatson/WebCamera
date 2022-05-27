@@ -175,16 +175,22 @@ function getRandomValues(typedArray) {
 function testPerformanceMatrixProductUint8Uint8(numDataSize, numIterations) {
   const matrix1 = new Uint8Array(numDataSize * numDataSize);
   const matrix2 = new Uint8Array(numDataSize * numDataSize);
+  let timeRandomAcc = 0;
   let timeAcc = 0;
   for (let i = 0; i < numIterations; ++i) {
+    const timeRandomStart = performance.now();
     getRandomValues(matrix1);
     getRandomValues(matrix2);
+    const timeRandomEnd = performance.now();
+    const timeRandomElapsed = (timeEnd - timeStart) / 2;
+    timeRandomAcc += timeRandomElapsed;
     const timeStart = performance.now();
     let result = matrixProductUint8Uint8(matrix1, matrix2, numDataSize);
     const timeEnd = performance.now();
     const timeElapsed = (timeEnd - timeStart);
     timeAcc += timeElapsed;
   }
+  console.log("Data size: ", numDataSize, "  Avg random time: ", (timeRandomAcc / numIterations), "ms");
   console.log("Data size: ", numDataSize, "  Avg time: ", (timeAcc / numIterations), "ms");
 }
 
