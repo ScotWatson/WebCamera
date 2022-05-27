@@ -199,9 +199,12 @@ function samplePerformance() {
   console.log("matrixProductUint8Uint8");
   testPerformanceMatrixProductUint8Uint8(100, 10);
   testPerformanceMatrixProductUint8Uint8(200, 10);
-  testPerformanceMatrixProductUint8Uint8(300, 10);
-  testPerformanceMatrixProductUint8Uint8(400, 10);
   testPerformanceMatrixProductUint8Uint8(500, 10);
   testPerformanceMatrixProductUint8Uint8(1000, 10);
+  testPerformanceMatrixProductUint8Uint8(2000, 10);
+  testPerformanceMatrixProductUint8Uint8(5000, 10);
+  testPerformanceMatrixProductUint8Uint8(10000, 10);
+  testPerformanceMatrixProductUint8Uint8(20000, 10);
+  testPerformanceMatrixProductUint8Uint8(50000, 10);
 }
 samplePerformance();
