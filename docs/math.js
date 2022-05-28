@@ -32,6 +32,17 @@ function fnTestDefiniteLoopBuiltin(thisLength) {
   }
 }
 
+function fnTestForEachCall(arr, fnCallback) {
+  definiteLoop(operate, thisLength);
+  function operate(index) {
+    fnCallback(arr[index], index, arr);
+  }
+}
+
+function fnTestForEachBuiltin(arr, fnCallback) {
+  arr.forEach(fnCallback);
+}
+
 // Memoization function - Calculates for all integers 0 to 255 (inclusive)
 // funcTransform: A function that takes a single argument (Number) and returns (Number)
 // Returns: Uint8Array (length == 256)
@@ -246,6 +257,52 @@ function testPerformanceDefiniteLoopBuiltin(numDataSize, numIterations) {
     timeAcc += timeElapsed;
   }
   console.log("Data size: ", numDataSize, "  Avg time: ", (timeAcc / numIterations), "ms");
+}
+
+// Test performance of fnTestDefiniteLoopCall
+// numDataSize:
+// numIterations:
+function testPerformanceForEachLoopCall(numDataSize, numIterations) {
+  let arr = new Array(numDataSize);
+  definiteLoop(setElem, numDataSize);
+  function setElem(index) {
+    arr[index] = Math.random();
+  }
+  let timeAcc = 0;
+  for (let i = 0; i < numIterations; ++i) {
+    const timeStart = performance.now();
+    let result = fnTestForEachLoopCall(arr, testCallback);
+    const timeEnd = performance.now();
+    const timeElapsed = (timeEnd - timeStart);
+    timeAcc += timeElapsed;
+  }
+  console.log("Data size: ", numDataSize, "  Avg time: ", (timeAcc / numIterations), "ms");
+  function testCallback(elem, index, array) {
+    let result = elem * index;
+  }
+}
+
+// Test performance of fnTestDefiniteLoopBuiltin
+// numDataSize:
+// numIterations:
+function testPerformanceForEachLoopBuiltin(numDataSize, numIterations) {
+  let arr = new Array(numDataSize);
+  definiteLoop(setElem, numDataSize);
+  function setElem(index) {
+    arr[index] = Math.random();
+  }
+  let timeAcc = 0;
+  for (let i = 0; i < numIterations; ++i) {
+    const timeStart = performance.now();
+    let result = fnTestForEachLoopBuiltin(arr, testCallback);
+    const timeEnd = performance.now();
+    const timeElapsed = (timeEnd - timeStart);
+    timeAcc += timeElapsed;
+  }
+  console.log("Data size: ", numDataSize, "  Avg time: ", (timeAcc / numIterations), "ms");
+  function testCallback(elem, index, array) {
+    let result = elem * index;
+  }
 }
 
 function samplePerformance() {
