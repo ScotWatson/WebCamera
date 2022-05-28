@@ -257,20 +257,20 @@ function samplePerformance() {
   testPerformanceDotProductUint8Float64(20000, 1000);
   testPerformanceDotProductUint8Float64(50000, 1000);
   console.log("testDefiniteLoopBuiltin");
-  testPerformanceDefiniteLoopBuiltin(10, 1000);
-  testPerformanceDefiniteLoopBuiltin(20, 1000);
-  testPerformanceDefiniteLoopBuiltin(50, 1000);
   testPerformanceDefiniteLoopBuiltin(100, 1000);
   testPerformanceDefiniteLoopBuiltin(200, 1000);
   testPerformanceDefiniteLoopBuiltin(500, 1000);
   testPerformanceDefiniteLoopBuiltin(1000, 1000);
+  testPerformanceDefiniteLoopBuiltin(2000, 1000);
+  testPerformanceDefiniteLoopBuiltin(5000, 1000);
+  testPerformanceDefiniteLoopBuiltin(10000, 1000);
   console.log("testDefiniteLoopCall");
-  testPerformanceDefiniteLoopCall(10, 1000);
-  testPerformanceDefiniteLoopCall(20, 1000);
-  testPerformanceDefiniteLoopCall(50, 1000);
   testPerformanceDefiniteLoopCall(100, 1000);
   testPerformanceDefiniteLoopCall(200, 1000);
   testPerformanceDefiniteLoopCall(500, 1000);
   testPerformanceDefiniteLoopCall(1000, 1000);
+  testPerformanceDefiniteLoopCall(2000, 1000);
+  testPerformanceDefiniteLoopCall(5000, 1000);
+  testPerformanceDefiniteLoopCall(10000, 1000);
 }
 samplePerformance();
