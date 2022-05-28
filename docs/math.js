@@ -259,10 +259,10 @@ function testPerformanceDefiniteLoopBuiltin(numDataSize, numIterations) {
   console.log("Data size: ", numDataSize, "  Avg time: ", (timeAcc / numIterations), "ms");
 }
 
-// Test performance of fnTestDefiniteLoopCall
+// Test performance of fnTestForEachCall
 // numDataSize:
 // numIterations:
-function testPerformanceForEachLoopCall(numDataSize, numIterations) {
+function testPerformanceForEachCall(numDataSize, numIterations) {
   let arr = new Array(numDataSize);
   definiteLoop(setElem, numDataSize);
   function setElem(index) {
@@ -271,7 +271,7 @@ function testPerformanceForEachLoopCall(numDataSize, numIterations) {
   let timeAcc = 0;
   for (let i = 0; i < numIterations; ++i) {
     const timeStart = performance.now();
-    let result = fnTestForEachLoopCall(arr, testCallback);
+    let result = fnTestForEachCall(arr, testCallback);
     const timeEnd = performance.now();
     const timeElapsed = (timeEnd - timeStart);
     timeAcc += timeElapsed;
@@ -282,10 +282,10 @@ function testPerformanceForEachLoopCall(numDataSize, numIterations) {
   }
 }
 
-// Test performance of fnTestDefiniteLoopBuiltin
+// Test performance of fnTestForEachBuiltin
 // numDataSize:
 // numIterations:
-function testPerformanceForEachLoopBuiltin(numDataSize, numIterations) {
+function testPerformanceForEachBuiltin(numDataSize, numIterations) {
   let arr = new Array(numDataSize);
   definiteLoop(setElem, numDataSize);
   function setElem(index) {
@@ -294,7 +294,7 @@ function testPerformanceForEachLoopBuiltin(numDataSize, numIterations) {
   let timeAcc = 0;
   for (let i = 0; i < numIterations; ++i) {
     const timeStart = performance.now();
-    let result = fnTestForEachLoopBuiltin(arr, testCallback);
+    let result = fnTestForEachBuiltin(arr, testCallback);
     const timeEnd = performance.now();
     const timeElapsed = (timeEnd - timeStart);
     timeAcc += timeElapsed;
@@ -313,21 +313,21 @@ function samplePerformance() {
   testPerformanceDotProductUint8Float64(10000, 1000);
   testPerformanceDotProductUint8Float64(20000, 1000);
   testPerformanceDotProductUint8Float64(50000, 1000);
-  console.log("testForEachLoopBuiltin");
-  testPerformanceForEachLoopBuiltin(100, 1000);
-  testPerformanceForEachLoopBuiltin(200, 1000);
-  testPerformanceForEachLoopBuiltin(500, 1000);
-  testPerformanceForEachLoopBuiltin(1000, 1000);
-  testPerformanceForEachLoopBuiltin(2000, 1000);
-  testPerformanceForEachLoopBuiltin(5000, 1000);
-  testPerformanceForEachLoopBuiltin(10000, 1000);
-  console.log("testForEachLoopCall");
-  testPerformanceForEachLoopCall(100, 1000);
-  testPerformanceForEachLoopCall(200, 1000);
-  testPerformanceForEachLoopCall(500, 1000);
-  testPerformanceForEachLoopCall(1000, 1000);
-  testPerformanceForEachLoopCall(2000, 1000);
-  testPerformanceForEachLoopCall(5000, 1000);
-  testPerformanceForEachLoopCall(10000, 1000);
+  console.log("testForEachBuiltin");
+  testPerformanceForEachBuiltin(100, 1000);
+  testPerformanceForEachBuiltin(200, 1000);
+  testPerformanceForEachBuiltin(500, 1000);
+  testPerformanceForEachBuiltin(1000, 1000);
+  testPerformanceForEachBuiltin(2000, 1000);
+  testPerformanceForEachBuiltin(5000, 1000);
+  testPerformanceForEachBuiltin(10000, 1000);
+  console.log("testForEachCall");
+  testPerformanceForEachCall(100, 1000);
+  testPerformanceForEachCall(200, 1000);
+  testPerformanceForEachCall(500, 1000);
+  testPerformanceForEachCall(1000, 1000);
+  testPerformanceForEachCall(2000, 1000);
+  testPerformanceForEachCall(5000, 1000);
+  testPerformanceForEachCall(10000, 1000);
 }
 samplePerformance();
