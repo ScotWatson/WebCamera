@@ -33,7 +33,7 @@ function fnTestDefiniteLoopBuiltin(thisLength) {
 }
 
 function fnTestForEachCall(arr, fnCallback) {
-  definiteLoop(operate, thisLength);
+  definiteLoop(operate, arr.length);
   function operate(index) {
     fnCallback(arr[index], index, arr);
   }
