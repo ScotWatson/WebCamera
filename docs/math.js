@@ -154,7 +154,7 @@ function dotProductUint8Float64(vec1, vec2) {
 // cols: Uint8Array
 // numRows: length of each column in cols
 // Returns: Uint16Array; length == rows.length * cols.length / (numRowsCols * numRowsCols)
-function matrixProductUint8Uint8(rows, cols, numColsRows) {
+function matrixProductUint8Uint8_1(rows, cols, numColsRows) {
   const numRows = (rows.length / numColsRows);
   arrRows = new Array(numRows);
   for (let i = 0; i < (rows.length / numColsRows); ++i) {
@@ -163,13 +163,33 @@ function matrixProductUint8Uint8(rows, cols, numColsRows) {
   const numCols = (cols.length / numColsRows);
   arrCols = new Array(numCols);
   for (let i = 0; i < (cols.length / numColsRows); ++i) {
-    arrCols[i] = rows.subarray(numColsRows * i, numColsRows * (i + 1));
+    arrCols[i] = cols.subarray(numColsRows * i, numColsRows * (i + 1));
   }
-  return;
   let ret = new Uint16Array(arrRows.length * arrCols.length);
   for (let i = 0; i < arrRows.length; ++i) {
     for (let j = 0; j < arrCols.length; ++j) {
       ret[arrCols.length * i + j] = dotProductUint8Uint8(arrRows[i], arrCols[j]);
+    }
+  }
+  return ret;
+}
+
+// Calculates the matrix product
+// rows: Uint8Array
+// numCols: length of each row in rows
+// cols: Uint8Array
+// numRows: length of each column in cols
+// Returns: Uint16Array; length == rows.length * cols.length / (numRowsCols * numRowsCols)
+function matrixProductUint8Uint8_2(rows, cols, numColsRows) {
+  const numRows = (rows.length / numColsRows);
+  const numCols = (cols.length / numColsRows);
+  let ret = new Uint16Array(arrRows.length * arrCols.length);
+  for (let i = 0; i < numRows; ++i) {
+    for (let j = 0; j < numCols; ++j) {
+      ret[numCols * i + j] = 0;
+      for (let k = 0; j < numColsRows; ++k) {
+        ret[numCols * i + j] += (arrRows[i * numColsRows + k] + arrCols[j * numColsRows + k]);
+      }
     }
   }
   return ret;
@@ -204,7 +224,7 @@ function getRandomValues(typedArray) {
   }
 }
 
-// Test performance of matrixProductUint8Uint8
+// Test performance of matrixProductUint8Uint8_1
 // numDataSize:
 // numIterations:
 function testPerformanceMatrixProductUint8Uint8(numDataSize, numIterations) {
@@ -214,13 +234,38 @@ function testPerformanceMatrixProductUint8Uint8(numDataSize, numIterations) {
   let timeAcc = 0;
   for (let i = 0; i < numIterations; ++i) {
     const timeRandomStart = performance.now();
-//    getRandomValues(matrix1);
-//    getRandomValues(matrix2);
+    getRandomValues(matrix1);
+    getRandomValues(matrix2);
     const timeRandomEnd = performance.now();
     const timeRandomElapsed = (timeRandomEnd - timeRandomStart) / 2;
     timeRandomAcc += timeRandomElapsed;
     const timeStart = performance.now();
-    let result = matrixProductUint8Uint8(matrix1, matrix2, numDataSize);
+    let result = matrixProductUint8Uint8_1(matrix1, matrix2, numDataSize);
+    const timeEnd = performance.now();
+    const timeElapsed = (timeEnd - timeStart);
+    timeAcc += timeElapsed;
+  }
+  console.log("Data size: ", numDataSize, "  Avg random time: ", (timeRandomAcc / numIterations), "ms");
+  console.log("Data size: ", numDataSize, "  Avg time: ", (timeAcc / numIterations), "ms");
+}
+
+// Test performance of matrixProductUint8Uint8_2
+// numDataSize:
+// numIterations:
+function testPerformanceMatrixProductUint8Uint8_2(numDataSize, numIterations) {
+  const matrix1 = new Uint8Array(numDataSize * numDataSize);
+  const matrix2 = new Uint8Array(numDataSize * numDataSize);
+  let timeRandomAcc = 0;
+  let timeAcc = 0;
+  for (let i = 0; i < numIterations; ++i) {
+    const timeRandomStart = performance.now();
+    getRandomValues(matrix1);
+    getRandomValues(matrix2);
+    const timeRandomEnd = performance.now();
+    const timeRandomElapsed = (timeRandomEnd - timeRandomStart) / 2;
+    timeRandomAcc += timeRandomElapsed;
+    const timeStart = performance.now();
+    let result = matrixProductUint8Uint8_2(matrix1, matrix2, numDataSize);
     const timeEnd = performance.now();
     const timeElapsed = (timeEnd - timeStart);
     timeAcc += timeElapsed;
@@ -345,5 +390,19 @@ function samplePerformance() {
   testPerformanceForEachCall(2000, 1000);
   testPerformanceForEachCall(5000, 1000);
   testPerformanceForEachCall(10000, 1000);
+  console.log("matrixProductUint8Uint8_1");
+  testPerformanceMatrixProductUint8Uint8_1(10, 1000);
+  testPerformanceMatrixProductUint8Uint8_1(20, 1000);
+  testPerformanceMatrixProductUint8Uint8_1(50, 1000);
+  testPerformanceMatrixProductUint8Uint8_1(100, 1000);
+  testPerformanceMatrixProductUint8Uint8_1(200, 1000);
+  testPerformanceMatrixProductUint8Uint8_1(500, 1000);
+  console.log("matrixProductUint8Uint8_2");
+  testPerformanceMatrixProductUint8Uint8_2(10, 1000);
+  testPerformanceMatrixProductUint8Uint8_2(20, 1000);
+  testPerformanceMatrixProductUint8Uint8_2(50, 1000);
+  testPerformanceMatrixProductUint8Uint8_2(100, 1000);
+  testPerformanceMatrixProductUint8Uint8_2(200, 1000);
+  testPerformanceMatrixProductUint8Uint8_2(500, 1000);
 }
 samplePerformance();
