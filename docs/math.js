@@ -216,6 +216,27 @@ function matrixProductUint8Float64(rows, cols, numColsRows) {
   return ret;
 }
 
+// Calculates the matrix product
+// rows: Float64Array
+// numCols: length of each row in rows
+// cols: Float64Array
+// numRows: length of each column in cols
+// Returns: Uint16Array; length == rows.length * cols.length / (numRowsCols * numRowsCols)
+function matrixProductUint8Float64(rows, cols, numColsRows) {
+  const numRows = (rows.length / numColsRows);
+  const numCols = (cols.length / numColsRows);
+  let ret = new Float64Array(numRows * numCols);
+  for (let i = 0; i < numRows; ++i) {
+    for (let j = 0; j < numCols; ++j) {
+      ret[numCols * i + j] = 0;
+      for (let k = 0; k < numColsRows; ++k) {
+        ret[numCols * i + j] += (rows[i * numColsRows + k] + cols[j * numColsRows + k]);
+      }
+    }
+  }
+  return ret;
+}
+
 // Test performance of dotProductUint8Float64
 // numDataSize:
 // numIterations:
@@ -380,35 +401,15 @@ function samplePerformance() {
   testPerformanceDotProductUint8Float64(20000, 1000);
   testPerformanceDotProductUint8Float64(50000, 1000);
   console.log("testDefiniteLoopBuiltin");
-  testPerformanceDefiniteLoopBuiltin(100, 1000);
-  testPerformanceDefiniteLoopBuiltin(200, 1000);
-  testPerformanceDefiniteLoopBuiltin(500, 1000);
-  testPerformanceDefiniteLoopBuiltin(1000, 1000);
-  testPerformanceDefiniteLoopBuiltin(2000, 1000);
   testPerformanceDefiniteLoopBuiltin(5000, 1000);
   testPerformanceDefiniteLoopBuiltin(10000, 1000);
-  console.log("testForEachCall");
-  testPerformanceDefiniteLoopCall(100, 1000);
-  testPerformanceDefiniteLoopCall(200, 1000);
-  testPerformanceDefiniteLoopCall(500, 1000);
-  testPerformanceDefiniteLoopCall(1000, 1000);
-  testPerformanceDefiniteLoopCall(2000, 1000);
+  console.log("testDefiniteLoopCall");
   testPerformanceDefiniteLoopCall(5000, 1000);
   testPerformanceDefiniteLoopCall(10000, 1000);
   console.log("testForEachBuiltin");
-  testPerformanceForEachBuiltin(100, 1000);
-  testPerformanceForEachBuiltin(200, 1000);
-  testPerformanceForEachBuiltin(500, 1000);
-  testPerformanceForEachBuiltin(1000, 1000);
-  testPerformanceForEachBuiltin(2000, 1000);
   testPerformanceForEachBuiltin(5000, 1000);
   testPerformanceForEachBuiltin(10000, 1000);
   console.log("testForEachCall");
-  testPerformanceForEachCall(100, 1000);
-  testPerformanceForEachCall(200, 1000);
-  testPerformanceForEachCall(500, 1000);
-  testPerformanceForEachCall(1000, 1000);
-  testPerformanceForEachCall(2000, 1000);
   testPerformanceForEachCall(5000, 1000);
   testPerformanceForEachCall(10000, 1000);
   console.log("matrixProductUint8Uint8_1");
