@@ -227,7 +227,7 @@ function getRandomValues(typedArray) {
 // Test performance of matrixProductUint8Uint8_1
 // numDataSize:
 // numIterations:
-function testPerformanceMatrixProductUint8Uint8(numDataSize, numIterations) {
+function testPerformanceMatrixProductUint8Uint8_1(numDataSize, numIterations) {
   const matrix1 = new Uint8Array(numDataSize * numDataSize);
   const matrix2 = new Uint8Array(numDataSize * numDataSize);
   let timeRandomAcc = 0;
