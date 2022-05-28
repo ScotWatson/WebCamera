@@ -393,14 +393,14 @@ function samplePerformance() {
   console.log("matrixProductUint8Uint8_1");
   testPerformanceMatrixProductUint8Uint8_1(10, 1000);
   testPerformanceMatrixProductUint8Uint8_1(20, 1000);
-  testPerformanceMatrixProductUint8Uint8_1(50, 10);
-  testPerformanceMatrixProductUint8Uint8_1(100, 10);
-  testPerformanceMatrixProductUint8Uint8_1(200, 10);
+  testPerformanceMatrixProductUint8Uint8_1(50, 1);
+  testPerformanceMatrixProductUint8Uint8_1(100, 1);
+  testPerformanceMatrixProductUint8Uint8_1(200, 1);
   console.log("matrixProductUint8Uint8_2");
-  testPerformanceMatrixProductUint8Uint8_2(10, 1000);
-  testPerformanceMatrixProductUint8Uint8_2(20, 1000);
-  testPerformanceMatrixProductUint8Uint8_2(50, 10);
-  testPerformanceMatrixProductUint8Uint8_2(100, 10);
-  testPerformanceMatrixProductUint8Uint8_2(200, 10);
+  testPerformanceMatrixProductUint8Uint8_2(10, 1);
+  testPerformanceMatrixProductUint8Uint8_2(20, 1);
+  testPerformanceMatrixProductUint8Uint8_2(50, 1);
+  testPerformanceMatrixProductUint8Uint8_2(100, 1);
+  testPerformanceMatrixProductUint8Uint8_2(200, 1);
 }
 samplePerformance();
