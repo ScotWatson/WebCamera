@@ -8,6 +8,30 @@ function testTransform(x) {
   return Math.exp(x);
 }
 
+// callbackFn: function to be executed; takes one argument (Number) - index; return value discarded
+// numLoops: (Number) how many times to call callbackFn
+// Returns: undefined
+function definiteLoop(callbackFn, numLoops) {
+  for (let i = 0; i < numLoops; ++i) {
+    callbackFn(i);
+  }
+}
+
+function fnTestDefiniteLoopCall(thisLength) {
+  let arr = new Array(thisLength);
+  definiteLoop(setElem, thisLength);
+  function setElem(index) {
+    arr[index] = {};
+  }
+}
+
+function fnTestDefiniteLoopBuiltin(thisLength) {
+  let arr = new Array(thisLength);
+  for (let i = 0; i < thisLength; ++i) {
+    arr[i] = {};
+  }
+}
+
 // Memoization function - Calculates for all integers 0 to 255 (inclusive)
 // funcTransform: A function that takes a single argument (Number) and returns (Number)
 // Returns: Uint8Array (length == 256)
@@ -194,6 +218,36 @@ function testPerformanceMatrixProductUint8Uint8(numDataSize, numIterations) {
   console.log("Data size: ", numDataSize, "  Avg time: ", (timeAcc / numIterations), "ms");
 }
 
+// Test performance of fnTestDefiniteLoopCall
+// numDataSize:
+// numIterations:
+function testPerformanceDefiniteLoopCall(numDataSize, numIterations) {
+  let timeAcc = 0;
+  for (let i = 0; i < numIterations; ++i) {
+    const timeStart = performance.now();
+    let result = fnTestDefiniteLoopCall(numDataSize);
+    const timeEnd = performance.now();
+    const timeElapsed = (timeEnd - timeStart);
+    timeAcc += timeElapsed;
+  }
+  console.log("Data size: ", numDataSize, "  Avg time: ", (timeAcc / numIterations), "ms");
+}
+
+// Test performance of fnTestDefiniteLoopBuiltin
+// numDataSize:
+// numIterations:
+function testPerformanceDefiniteLoopBuiltin(numDataSize, numIterations) {
+  let timeAcc = 0;
+  for (let i = 0; i < numIterations; ++i) {
+    const timeStart = performance.now();
+    let result = fnTestDefiniteLoopBuiltin(numDataSize);
+    const timeEnd = performance.now();
+    const timeElapsed = (timeEnd - timeStart);
+    timeAcc += timeElapsed;
+  }
+  console.log("Data size: ", numDataSize, "  Avg time: ", (timeAcc / numIterations), "ms");
+}
+
 function samplePerformance() {
   console.log("dotProductUint8Float64");
   testPerformanceDotProductUint8Float64(1000, 1000);
@@ -202,14 +256,21 @@ function samplePerformance() {
   testPerformanceDotProductUint8Float64(10000, 1000);
   testPerformanceDotProductUint8Float64(20000, 1000);
   testPerformanceDotProductUint8Float64(50000, 1000);
-  console.log("matrixProductUint8Uint8");
-  console.log("w/ subarray");
-  testPerformanceMatrixProductUint8Uint8(10, 1000);
-  testPerformanceMatrixProductUint8Uint8(20, 1000);
-  testPerformanceMatrixProductUint8Uint8(50, 1000);
-  testPerformanceMatrixProductUint8Uint8(100, 1000);
-  testPerformanceMatrixProductUint8Uint8(200, 1000);
-  testPerformanceMatrixProductUint8Uint8(500, 1000);
-  testPerformanceMatrixProductUint8Uint8(1000, 1000);
+  console.log("testDefiniteLoopBuiltin");
+  testPerformanceDefiniteLoopBuiltin(10, 1000);
+  testPerformanceDefiniteLoopBuiltin(20, 1000);
+  testPerformanceDefiniteLoopBuiltin(50, 1000);
+  testPerformanceDefiniteLoopBuiltin(100, 1000);
+  testPerformanceDefiniteLoopBuiltin(200, 1000);
+  testPerformanceDefiniteLoopBuiltin(500, 1000);
+  testPerformanceDefiniteLoopBuiltin(1000, 1000);
+  console.log("testDefiniteLoopCall");
+  testPerformanceDefiniteLoopCall(10, 1000);
+  testPerformanceDefiniteLoopCall(20, 1000);
+  testPerformanceDefiniteLoopCall(50, 1000);
+  testPerformanceDefiniteLoopCall(100, 1000);
+  testPerformanceDefiniteLoopCall(200, 1000);
+  testPerformanceDefiniteLoopCall(500, 1000);
+  testPerformanceDefiniteLoopCall(1000, 1000);
 }
 samplePerformance();
