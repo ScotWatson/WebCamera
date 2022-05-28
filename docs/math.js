@@ -195,6 +195,27 @@ function matrixProductUint8Uint8_2(rows, cols, numColsRows) {
   return ret;
 }
 
+// Calculates the matrix product
+// rows: Uint8Array
+// numCols: length of each row in rows
+// cols: Float64Array
+// numRows: length of each column in cols
+// Returns: Uint16Array; length == rows.length * cols.length / (numRowsCols * numRowsCols)
+function matrixProductUint8Float64(rows, cols, numColsRows) {
+  const numRows = (rows.length / numColsRows);
+  const numCols = (cols.length / numColsRows);
+  let ret = new Float64Array(numRows * numCols);
+  for (let i = 0; i < numRows; ++i) {
+    for (let j = 0; j < numCols; ++j) {
+      ret[numCols * i + j] = 0;
+      for (let k = 0; k < numColsRows; ++k) {
+        ret[numCols * i + j] += (rows[i * numColsRows + k] + cols[j * numColsRows + k]);
+      }
+    }
+  }
+  return ret;
+}
+
 // Test performance of dotProductUint8Float64
 // numDataSize:
 // numIterations:
