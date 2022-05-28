@@ -183,7 +183,7 @@ function matrixProductUint8Uint8_1(rows, cols, numColsRows) {
 function matrixProductUint8Uint8_2(rows, cols, numColsRows) {
   const numRows = (rows.length / numColsRows);
   const numCols = (cols.length / numColsRows);
-  let ret = new Uint16Array(arrRows.length * arrCols.length);
+  let ret = new Uint16Array(numRows * numCols);
   for (let i = 0; i < numRows; ++i) {
     for (let j = 0; j < numCols; ++j) {
       ret[numCols * i + j] = 0;
