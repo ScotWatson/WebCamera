@@ -156,19 +156,19 @@ function dotProductUint8Float64(vec1, vec2) {
 // Returns: Uint16Array; length == rows.length * cols.length / (numRowsCols * numRowsCols)
 function matrixProductUint8Uint8_1(rows, cols, numColsRows) {
   const numRows = (rows.length / numColsRows);
-  arrRows = new Array(numRows);
-  for (let i = 0; i < (rows.length / numColsRows); ++i) {
+  const arrRows = new Array(numRows);
+  for (let i = 0; i < numRows; ++i) {
     arrRows[i] = rows.subarray(numColsRows * i, numColsRows * (i + 1));
   }
   const numCols = (cols.length / numColsRows);
-  arrCols = new Array(numCols);
-  for (let i = 0; i < (cols.length / numColsRows); ++i) {
+  const arrCols = new Array(numCols);
+  for (let i = 0; i < numCols; ++i) {
     arrCols[i] = cols.subarray(numColsRows * i, numColsRows * (i + 1));
   }
   let ret = new Uint16Array(arrRows.length * arrCols.length);
-  for (let i = 0; i < arrRows.length; ++i) {
-    for (let j = 0; j < arrCols.length; ++j) {
-      ret[arrCols.length * i + j] = dotProductUint8Uint8(arrRows[i], arrCols[j]);
+  for (let i = 0; i < numRows; ++i) {
+    for (let j = 0; j < numCols; ++j) {
+      ret[numCols * i + j] = dotProductUint8Uint8(arrRows[i], arrCols[j]);
     }
   }
   return ret;
@@ -188,7 +188,7 @@ function matrixProductUint8Uint8_2(rows, cols, numColsRows) {
     for (let j = 0; j < numCols; ++j) {
       ret[numCols * i + j] = 0;
       for (let k = 0; k < numColsRows; ++k) {
-        ret[numCols * i + j] += (arrRows[i * numColsRows + k] + arrCols[j * numColsRows + k]);
+        ret[numCols * i + j] += (rows[i * numColsRows + k] + cols[j * numColsRows + k]);
       }
     }
   }
