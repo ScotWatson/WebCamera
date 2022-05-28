@@ -187,7 +187,7 @@ function matrixProductUint8Uint8_2(rows, cols, numColsRows) {
   for (let i = 0; i < numRows; ++i) {
     for (let j = 0; j < numCols; ++j) {
       ret[numCols * i + j] = 0;
-      for (let k = 0; j < numColsRows; ++k) {
+      for (let k = 0; k < numColsRows; ++k) {
         ret[numCols * i + j] += (arrRows[i * numColsRows + k] + arrCols[j * numColsRows + k]);
       }
     }
