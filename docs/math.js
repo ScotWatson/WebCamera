@@ -3,6 +3,25 @@
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+// Remove column
+// data: UintArray containing the data to be copied
+// numCols: total number of columns
+// colToRemove: index of column to be removed
+// Returns: Uint8Array
+function matrixRemoveColumnUint8(data, numCols, colToRemove) {
+  const numRows = data.length / numCols;
+  const ret = new Uint8Array(numRows * (numCols - 1));
+  let retIndex = 0;
+  definiteLoop(copy, data.length);
+  return ret;
+  function copy(index) {
+    if ((index % numCols) != colToRemove) {
+      ret[retIndex] = data[index];
+      ++retIndex;
+    }
+  }
+}
+
 // x: input data
 function testTransform(x) {
   return Math.exp(x);
