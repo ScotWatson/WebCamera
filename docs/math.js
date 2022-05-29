@@ -67,7 +67,7 @@ function fnTestForEachBuiltin(arr, fnCallback) {
 // Returns: Uint8Array (length == 256)
 function createUint8Uint8Table(funcTransform) {
   function calc(element, index, array) {
-    element = Math.max(Math.min(funcTransform(index), 255), 0);
+    element = funcTransform(index);
   }
   const ret = new Uint8Array(256);
   ret.forEach(calc);
@@ -109,6 +109,19 @@ function transformUint8Uint8(input, tblTransform) {
 }
 
 // Uses tblTransform to transform each element of input
+// input: Uint8Array
+// tblTransform: Uint8Array, must have length == 256
+function transformFloat64Uint8(input, tblTransform) {
+  function calc(elementInput, index, array) {
+    return (tblTransform.findIndex(gt) - 1);
+    function gt(elementTransform, index, array) {
+      return (elementInput >= elementTransform);
+    }
+  }
+  return input.map(calc);
+}
+
+// Uses tblTransform to transform each element of input
 // data: Uint8Array
 // tblTransform: Float32Array, must have length == 256
 function transformUint8Float32(input, tblTransform) {
@@ -132,13 +145,26 @@ function transformUint8Float64(input, tblTransform) {
 // vec1: Uint8Array
 // vec2: Uint8Array
 // vec1 & vec2 must be the same length
-// Returns: Uint16Array (length == 1)
-function dotProductUint8Uint8(vec1, vec2) {
+// Returns: Number
+function dotProductUint8Uint8_1(vec1, vec2) {
   function calc(acc, element, index, array) {
-    acc[0] += element * vec2[index];
-    return acc;
+    return (acc + (element * vec2[index]));
   }
-  return vec1.reduce(calc, new Uint16Array(1));
+  return vec1.reduce(calc, 0);
+}
+
+// Calculates the dot product of vec1 & vec2
+// vec1: Uint8Array
+// vec2: Uint8Array
+// vec1 & vec2 must be the same length
+// Returns: Number
+function dotProductUint8Uint8_2(vec1, vec2) {
+  let acc = 0;
+  definiteLoop(calc, vec1.length);
+  function calc(index) {
+    acc += vec1[index] * vec2[index];
+  }
+  return acc;
 }
 
 // Calculates the dot product of vec1 & vec2
@@ -412,6 +438,20 @@ function testPerformanceForEachBuiltin(numDataSize, numIterations) {
 }
 
 function samplePerformance() {
+  console.log("dotProductUint8Uint8_1");
+  testPerformanceDotProductUint8Uint8_1(1000, 1000);
+  testPerformanceDotProductUint8Uint8_1(2000, 1000);
+  testPerformanceDotProductUint8Uint8_1(5000, 1000);
+  testPerformanceDotProductUint8Uint8_1(10000, 1000);
+  testPerformanceDotProductUint8Uint8_1(20000, 1000);
+  testPerformanceDotProductUint8Uint8_1(50000, 1000);
+  console.log("dotProductUint8Uint8_2");
+  testPerformanceDotProductUint8Uint8_2(1000, 1000);
+  testPerformanceDotProductUint8Uint8_2(2000, 1000);
+  testPerformanceDotProductUint8Uint8_2(5000, 1000);
+  testPerformanceDotProductUint8Uint8_2(10000, 1000);
+  testPerformanceDotProductUint8Uint8_2(20000, 1000);
+  testPerformanceDotProductUint8Uint8_2(50000, 1000);
   console.log("dotProductUint8Float64");
   testPerformanceDotProductUint8Float64(1000, 1000);
   testPerformanceDotProductUint8Float64(2000, 1000);
