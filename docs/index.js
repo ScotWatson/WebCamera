@@ -84,7 +84,7 @@ window.addEventListener("load", function () {
     }
   }
   const tblGammaLinear = createUint8Float64Table(sRGB_to_linear);
-  const tblLinearGamma = createFloat64Uint8Table(linear_to_sRGB);
+  const tblLinearGamma = createUint8Float64Table(linear_to_sRGB);
   let arrIntensity;
   const matrixLinear_XYZ = new Float64Array(9);
   matrixLinear_XYZ[0] = 0.4124;
