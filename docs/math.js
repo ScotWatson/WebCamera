@@ -282,6 +282,44 @@ function matrixProductUint8Float64(rows, cols, numColsRows) {
   return ret;
 }
 
+// Test performance of dotProductUint8Uint8_1
+// numDataSize:
+// numIterations:
+function testPerformanceDotProductUint8Uint8_1(numDataSize, numIterations) {
+  const vec1 = new Uint8Array(numDataSize);
+  const vec2 = new Uint8Array(numDataSize);
+  let timeAcc = 0;
+  for (let i = 0; i < numIterations; ++i) {
+    crypto.getRandomValues(vec1);
+    crypto.getRandomValues(vec2);
+    const timeStart = performance.now();
+    let result = dotProductUint8Uint8_1(vec1, vec2);
+    const timeEnd = performance.now();
+    const timeElapsed = (timeEnd - timeStart);
+    timeAcc += timeElapsed;
+  }
+  console.log("Data size: ", numDataSize, "  Avg time: ", (timeAcc / numIterations), "ms");
+}
+
+// Test performance of dotProductUint8Uint8_2
+// numDataSize:
+// numIterations:
+function testPerformanceDotProductUint8Uint8_2(numDataSize, numIterations) {
+  const vec1 = new Uint8Array(numDataSize);
+  const vec2 = new Uint8Array(numDataSize);
+  let timeAcc = 0;
+  for (let i = 0; i < numIterations; ++i) {
+    crypto.getRandomValues(vec1);
+    crypto.getRandomValues(vec2);
+    const timeStart = performance.now();
+    let result = dotProductUint8Uint8_2(vec1, vec2);
+    const timeEnd = performance.now();
+    const timeElapsed = (timeEnd - timeStart);
+    timeAcc += timeElapsed;
+  }
+  console.log("Data size: ", numDataSize, "  Avg time: ", (timeAcc / numIterations), "ms");
+}
+
 // Test performance of dotProductUint8Float64
 // numDataSize:
 // numIterations:
