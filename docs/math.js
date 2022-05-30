@@ -3,523 +3,330 @@
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-// Remove column
-// data: UintArray containing the data to be copied
-// numCols: total number of columns
-// colToRemove: index of column to be removed
-// Returns: Uint8Array
-function matrixRemoveColumnUint8(data, numCols, colToRemove) {
-  const numRows = data.length / numCols;
-  const ret = new Uint8Array(numRows * (numCols - 1));
-  let retIndex = 0;
-  definiteLoop(copy, data.length);
+// Finds the average run time of the currently selected function
+// fnCreateArguments: (Function) Provides the arguments list for each iteration of the test
+// numIterations: (Number)
+// Returns: (Number) Average run time
+function testRuntime(fnTest, fnCreateArguments, numIterations) {
+  let accTime = 0;
+  for (let i = 0; i < numIterations; ++i) {
+    const args = fnCreateArguments();
+    const startTime = performance.now();
+    fnTest.apply(this, args);
+    const endTime = performance.now();
+    accTime += (endTime - startTime);
+  }
+  return (accTime / numIterations);
+}
+
+// newOptionFunction
+// Used to provide multiple function under the same name
+// The intent is to allow multiple implementations of the same function, so that the highest performance function can be selected
+function newOptionFunction(fnDefault) {
+  let fnCurrent = fnDefault;
+  const setOptions = new Set();
+  setOptions.add(fnDefault);
+  const ret = (function () {
+    return fnCurrent.apply(this, arguments);
+  });
+  Object.defineProperty(ret, "fnDefault", {
+    get: function () {
+      return fnDefault;
+    },
+  });
+  Object.defineProperty(ret, "fnCurrent", {
+    get: function () {
+      return fnCurrent;
+    },
+    set: function (fnToSelect) {
+      if (setOptions.has(fnToSelect)) {
+        fnCurrent = fnToSelect;
+      } else {
+        throw new Error("Function provided is not in the list of options.");
+      }
+    },
+  });
+  ret.addOption = function (fnToAdd) {
+    setOptions.add(fnToAdd);
+  };
+  ret.removeOption = function (fnToRemove) {
+    if (fnCurrent === fnToRemove) {
+      throw new Error("Current function cannot be removed from the list of options.");
+    }
+    setOptions.delete(fnToRemove);
+  };
+  ret[Symbol.iterator] = setOptions[Symbol.iterator];
   return ret;
-  function copy(index) {
-    if ((index % numCols) != colToRemove) {
-      ret[retIndex] = data[index];
-      ++retIndex;
+}
+
+
+const MatrixMath = (function () {
+  const objMain = {};
+
+  // Performs the provided function the specified (fixed) number of times
+  // callbackFn: function to be executed; takes one argument (Number) - index; return value discarded
+  // numLoops: (Number) how many times to call callbackFn
+  // Returns: undefined
+  function definiteLoop_52D92525(callbackFn, numLoops) {
+    for (let i = 0; i < numLoops; ++i) {
+      callbackFn(i);
     }
   }
-}
+  objMain.definiteLoop = newOptionFunction(definiteLoop_52D92525);
 
-// x: input data
-function testTransform(x) {
-  return Math.exp(x);
-}
-
-// callbackFn: function to be executed; takes one argument (Number) - index; return value discarded
-// numLoops: (Number) how many times to call callbackFn
-// Returns: undefined
-function definiteLoop(callbackFn, numLoops) {
-  for (let i = 0; i < numLoops; ++i) {
-    callbackFn(i);
-  }
-}
-
-function fnTestDefiniteLoopCall(thisLength) {
-  let arr = new Array(thisLength);
-  definiteLoop(setElem, thisLength);
-  function setElem(index) {
-    arr[index] = {};
-  }
-}
-
-function fnTestDefiniteLoopBuiltin(thisLength) {
-  let arr = new Array(thisLength);
-  for (let i = 0; i < thisLength; ++i) {
-    arr[i] = {};
-  }
-}
-
-function fnTestForEachCall(arr, fnCallback) {
-  definiteLoop(operate, arr.length);
-  function operate(index) {
-    fnCallback(arr[index], index, arr);
-  }
-}
-
-function fnTestForEachBuiltin(arr, fnCallback) {
-  arr.forEach(fnCallback);
-}
-
-// Memoization function - Calculates for all integers 0 to 255 (inclusive)
-// funcTransform: A function that takes a single argument (Number) and returns (Number)
-// Returns: Uint8Array (length == 256)
-function createUint8Uint8Table(funcTransform) {
-  function calc(element, index, array) {
-    element = funcTransform(index);
-  }
-  const ret = new Uint8Array(256);
-  ret.forEach(calc);
-  return ret;
-}
-
-// Memoization function - Calculates for all integers 0 to 255 (inclusive)
-// funcTransform: A function that takes a single argument (Number) and returns (Number)
-// Returns: Float32Array (length == 256), 1 kiB
-function createUint8Float32Table(funcTransform) {
-  function calc(element, index, array) {
-    element = funcTransform(index);
-  }
-  const ret = new Float32Array(256);
-  ret.forEach(calc);
-  return ret;
-}
-
-// Memoization function - Calculates for all integers 0 to 255 (inclusive)
-// funcTransform: A function that takes a single argument (Number) and returns (Number)
-// Returns: Float64Array (length == 256)
-function createUint8Float64Table(funcTransform) {
-  function calc(element, index, array) {
-    element = funcTransform(index);
-  }
-  const ret = new Float64Array(256);
-  ret.forEach(calc);
-  return ret;
-}
-
-// Uses tblTransform to transform each element of input
-// input: Uint8Array
-// tblTransform: Uint8Array, must have length == 256
-function transformUint8Uint8(input, tblTransform) {
-  function calc(element, index, array) {
-    return tblTransform[element];
-  }
-  return input.map(calc);
-}
-
-// Uses tblTransform to transform each element of input
-// input: Uint8Array
-// tblTransform: Uint8Array, must have length == 256
-function transformFloat64Uint8(input, tblTransform) {
-  function calc(elementInput, index, array) {
-    return (tblTransform.findIndex(gt) - 1);
-    function gt(elementTransform, index, array) {
-      return (elementInput >= elementTransform);
+  // Fills a buffer with random values
+  // typedArray: a TypedArray that will be filled with random values
+  // Returns: undefined
+  function getRandomValues_CCD8F9ED = function (typedArray) {
+    const maxLength = 65536 / typedArray.BYTES_PER_ELEMENT;
+    const numLoops = typedArray.length / maxLength;
+    for (let i = 0; i < numLoops; ++i) {
+      crypto.getRandomValues(typedArray.subarray(maxLength * i, maxLength * (i + 1)));
     }
   }
-  return input.map(calc);
-}
+  objMain.getRandomValues = newOptionFunction(getRandomValues_CCD8F9ED);
 
-// Uses tblTransform to transform each element of input
-// data: Uint8Array
-// tblTransform: Float32Array, must have length == 256
-function transformUint8Float32(input, tblTransform) {
-  function calc(element, index, array) {
-    return tblTransform[element];
+  // Remove column
+  // data: UintArray containing the data to be copied
+  // numCols: total number of columns
+  // colToRemove: index of column to be removed
+  // Returns: Uint8Array
+  function matrixRemoveColumnUint8_55B7A225(data, numCols, colToRemove) {
+    const numRows = data.length / numCols;
+    const ret = new Uint8Array(numRows * (numCols - 1));
+    let retIndex = 0;
+    definiteLoop(copy, data.length);
+    return ret;
+    function copy(index) {
+      if ((index % numCols) != colToRemove) {
+        ret[retIndex] = data[index];
+        ++retIndex;
+      }
+    }
   }
-  return input.map(calc);
-}
+  objMain.matrixRemoveColumnUint8 = newOptionFunction(matrixRemoveColumnUint8_55B7A225);
 
-// Uses tblTransform to transform each element of input
-// data: Uint8Array
-// tblTransform: Float64Array, must have length == 256
-function transformUint8Float64(input, tblTransform) {
-  function calc(element, index, array) {
-    return tblTransform[element];
+  // Memoization function - Calculates for all integers 0 to 255 (inclusive)
+  // funcTransform: A function that takes a single argument (Number) and returns (Number)
+  // Returns: Uint8Array (length == 256)
+  function createUint8Uint8Table_CA07DBBA(funcTransform) {
+    function calc(element, index, array) {
+      element = funcTransform(index);
+    }
+    const ret = new Uint8Array(256);
+    ret.forEach(calc);
+    return ret;
   }
-  return input.map(calc);
-}
+  objMain.createUint8Uint8Table = newOptionFunction(createUint8Uint8Table_CA07DBBA);
 
-// Calculates the dot product of vec1 & vec2
-// vec1: Uint8Array
-// vec2: Uint8Array
-// vec1 & vec2 must be the same length
-// Returns: Number
-function dotProductUint8Uint8_1(vec1, vec2) {
-  function calc(acc, element, index, array) {
-    return (acc + (element * vec2[index]));
+  // Memoization function - Calculates for all integers 0 to 255 (inclusive)
+  // funcTransform: A function that takes a single argument (Number) and returns (Number)
+  // Returns: Float32Array (length == 256), 1 kiB
+  function createUint8Float32Table_A42DFA1E(funcTransform) {
+    function calc(element, index, array) {
+      element = funcTransform(index);
+    }
+    const ret = new Float32Array(256);
+    ret.forEach(calc);
+    return ret;
   }
-  return vec1.reduce(calc, 0);
-}
+  objMain.createUint8Float32Table = newOptionFunction(createUint8Float32Table_A42DFA1E);
 
-// Calculates the dot product of vec1 & vec2
-// vec1: Uint8Array
-// vec2: Uint8Array
-// vec1 & vec2 must be the same length
-// Returns: Number
-function dotProductUint8Uint8_2(vec1, vec2) {
-  let acc = 0;
-  definiteLoop(calc, vec1.length);
-  function calc(index) {
-    acc += vec1[index] * vec2[index];
+  // Memoization function - Calculates for all integers 0 to 255 (inclusive)
+  // funcTransform: A function that takes a single argument (Number) and returns (Number)
+  // Returns: Float64Array (length == 256)
+  function createUint8Float64Table_4830329E(funcTransform) {
+    function calc(element, index, array) {
+      element = funcTransform(index);
+    }
+    const ret = new Float64Array(256);
+    ret.forEach(calc);
+    return ret;
   }
-  return acc;
-}
+  objMain.createUint8Float64Table = newOptionFunction(createUint8Float64Table_4830329E);
 
-// Calculates the dot product of vec1 & vec2
-// vec1: Uint8Array
-// vec2: Float32Array
-// vec1 & vec2 must be the same length
-// Returns: Float32Array (length == 1)
-function dotProductUint8Float32(vec1, vec2) {
-  function calc(acc, element, index, array) {
-    acc[0] += element * vec2[index];
+  // Uses tblTransform to transform each element of input
+  // input: Uint8Array
+  // tblTransform: Uint8Array, must have length == 256
+  function transformUint8Uint8_F50AD938(input, tblTransform) {
+    function calc(element, index, array) {
+      return tblTransform[element];
+    }
+    return input.map(calc);
+  }
+  objMain.transformUint8Uint8 = newOptionFunction(transformUint8Uint8_F50AD938);
+
+  // Uses tblTransform to transform each element of input
+  // input: Uint8Array
+  // tblTransform: Uint8Array, must have length == 256
+  function transformFloat64Uint8_DB586F99(input, tblTransform) {
+    function calc(elementInput, index, array) {
+      return (tblTransform.findIndex(gt) - 1);
+      function gt(elementTransform, index, array) {
+        return (elementInput >= elementTransform);
+      }
+    }
+    return input.map(calc);
+  }
+  objMain.transformFloat64Uint8 = newOptionFunction(transformFloat64Uint8_DB586F99);
+
+  // Uses tblTransform to transform each element of input
+  // data: Uint8Array
+  // tblTransform: Float32Array, must have length == 256
+  function transformUint8Float32_20B227EF(input, tblTransform) {
+    function calc(element, index, array) {
+      return tblTransform[element];
+    }
+    return input.map(calc);
+  }
+  objMain.transformUint8Float32 = newOptionFunction(transformUint8Float32_20B227EF);
+
+  // Uses tblTransform to transform each element of input
+  // data: Uint8Array
+  // tblTransform: Float64Array, must have length == 256
+  function transformUint8Float64_F6A7E433(input, tblTransform) {
+    function calc(element, index, array) {
+      return tblTransform[element];
+    }
+    return input.map(calc);
+  }
+  objMain.transformUint8Float64 = newOptionFunction(transformUint8Float64_F6A7E433);
+
+  // Calculates the dot product of vec1 & vec2
+  // vec1: Uint8Array
+  // vec2: Uint8Array
+  // vec1 & vec2 must be the same length
+  // Returns: Number
+  function dotProductUint8Uint8_2377B9AD(vec1, vec2) {
+    function calc(acc, element, index, array) {
+      return (acc + (element * vec2[index]));
+    }
+    return vec1.reduce(calc, 0);
+  }
+  objMain.dotProductUint8Uint8 = newOptionFunction(dotProductUint8Uint8_2377B9AD);
+  function dotProductUint8Uint8_66A6E181(vec1, vec2) {
+    let acc = 0;
+    definiteLoop(calc, vec1.length);
+    function calc(index) {
+      acc += vec1[index] * vec2[index];
+    }
     return acc;
   }
-  return vec1.reduce(calc, new Float32Array(1));
-}
-
-// Calculates the dot product of vec1 & vec2
-// vec1: Uint8Array
-// vec2: Float64Array
-// vec1 & vec2 must be the same length
-// Returns: Float64Array (length == 1)
-function dotProductUint8Float64(vec1, vec2) {
-  function calc(acc, element, index, array) {
-    acc[0] += element * vec2[index];
-    return acc;
-  }
-  return vec1.reduce(calc, new Float64Array(1));
-}
-
-// Calculates the matrix product
-// rows: Uint8Array
-// numCols: length of each row in rows
-// cols: Uint8Array
-// numRows: length of each column in cols
-// Returns: Uint16Array; length == rows.length * cols.length / (numRowsCols * numRowsCols)
-function matrixProductUint8Uint8_1(rows, cols, numColsRows) {
-  const numRows = (rows.length / numColsRows);
-  const arrRows = new Array(numRows);
-  for (let i = 0; i < numRows; ++i) {
-    arrRows[i] = rows.subarray(numColsRows * i, numColsRows * (i + 1));
-  }
-  const numCols = (cols.length / numColsRows);
-  const arrCols = new Array(numCols);
-  for (let i = 0; i < numCols; ++i) {
-    arrCols[i] = cols.subarray(numColsRows * i, numColsRows * (i + 1));
-  }
-  let ret = new Uint16Array(arrRows.length * arrCols.length);
-  for (let i = 0; i < numRows; ++i) {
-    for (let j = 0; j < numCols; ++j) {
-      ret[numCols * i + j] = dotProductUint8Uint8(arrRows[i], arrCols[j]);
+  objMain.dotProductUint8Uint8.addOption(dotProductUint8Uint8_66A6E181);
+  
+  // Calculates the dot product of vec1 & vec2
+  // vec1: Uint8Array
+  // vec2: Float32Array
+  // vec1 & vec2 must be the same length
+  // Returns: Float32Array (length == 1)
+  function dotProductUint8Float32_8930D832(vec1, vec2) {
+    function calc(acc, element, index, array) {
+      acc[0] += element * vec2[index];
+      return acc;
     }
+    return vec1.reduce(calc, new Float32Array(1));
   }
-  return ret;
-}
+  objMain.dotProductUint8Float32 = newOptionFunction(dotProductUint8Float32_8930D832);
 
-// Calculates the matrix product
-// rows: Uint8Array
-// numCols: length of each row in rows
-// cols: Uint8Array
-// numRows: length of each column in cols
-// Returns: Uint16Array; length == rows.length * cols.length / (numRowsCols * numRowsCols)
-function matrixProductUint8Uint8_2(rows, cols, numColsRows) {
-  const numRows = (rows.length / numColsRows);
-  const numCols = (cols.length / numColsRows);
-  let ret = new Uint16Array(numRows * numCols);
-  for (let i = 0; i < numRows; ++i) {
-    for (let j = 0; j < numCols; ++j) {
-      ret[numCols * i + j] = 0;
-      for (let k = 0; k < numColsRows; ++k) {
-        ret[numCols * i + j] += (rows[i * numColsRows + k] + cols[j * numColsRows + k]);
+  // Calculates the dot product of vec1 & vec2
+  // vec1: Uint8Array
+  // vec2: Float64Array
+  // vec1 & vec2 must be the same length
+  // Returns: Float64Array (length == 1)
+  function dotProductUint8Float64_322293FE(vec1, vec2) {
+    function calc(acc, element, index, array) {
+      acc[0] += element * vec2[index];
+      return acc;
+    }
+    return vec1.reduce(calc, new Float64Array(1));
+  }
+  objMain.dotProductUint8Float64 = newOptionFunction(dotProductUint8Float64_322293FE);
+
+  // Calculates the matrix product
+  // rows: Uint8Array
+  // numCols: length of each row in rows
+  // cols: Uint8Array
+  // numRows: length of each column in cols
+  // Returns: Uint16Array; length == rows.length * cols.length / (numRowsCols * numRowsCols)
+  function matrixProductUint8Uint8_3AB43895(rows, cols, numColsRows) {
+    const numRows = (rows.length / numColsRows);
+    const arrRows = new Array(numRows);
+    for (let i = 0; i < numRows; ++i) {
+      arrRows[i] = rows.subarray(numColsRows * i, numColsRows * (i + 1));
+    }
+    const numCols = (cols.length / numColsRows);
+    const arrCols = new Array(numCols);
+    for (let i = 0; i < numCols; ++i) {
+      arrCols[i] = cols.subarray(numColsRows * i, numColsRows * (i + 1));
+    }
+    let ret = new Uint16Array(arrRows.length * arrCols.length);
+    for (let i = 0; i < numRows; ++i) {
+      for (let j = 0; j < numCols; ++j) {
+        ret[numCols * i + j] = dotProductUint8Uint8(arrRows[i], arrCols[j]);
       }
     }
+    return ret;
   }
-  return ret;
-}
-
-// Calculates the matrix product
-// rows: Uint8Array
-// numCols: length of each row in rows
-// cols: Float64Array
-// numRows: length of each column in cols
-// Returns: Uint16Array; length == rows.length * cols.length / (numRowsCols * numRowsCols)
-function matrixProductUint8Float64(rows, cols, numColsRows) {
-  const numRows = (rows.length / numColsRows);
-  const numCols = (cols.length / numColsRows);
-  let ret = new Float64Array(numRows * numCols);
-  for (let i = 0; i < numRows; ++i) {
-    for (let j = 0; j < numCols; ++j) {
-      ret[numCols * i + j] = 0;
-      for (let k = 0; k < numColsRows; ++k) {
-        ret[numCols * i + j] += (rows[i * numColsRows + k] + cols[j * numColsRows + k]);
+  objMain.matrixProductUint8Uint8 = newOptionFunction(matrixProductUint8Uint8_3AB43895);
+  function matrixProductUint8Uint8_4AB3AD62(rows, cols, numColsRows) {
+    const numRows = (rows.length / numColsRows);
+    const numCols = (cols.length / numColsRows);
+    let ret = new Uint16Array(numRows * numCols);
+    for (let i = 0; i < numRows; ++i) {
+      for (let j = 0; j < numCols; ++j) {
+        ret[numCols * i + j] = 0;
+        for (let k = 0; k < numColsRows; ++k) {
+          ret[numCols * i + j] += (rows[i * numColsRows + k] + cols[j * numColsRows + k]);
+        }
       }
     }
+    return ret;
   }
-  return ret;
-}
+  objMain.matrixProductUint8Uint8.addOption(matrixProductUint8Uint8_4AB3AD62);
 
-// Calculates the matrix product
-// rows: Float64Array
-// numCols: length of each row in rows
-// cols: Float64Array
-// numRows: length of each column in cols
-// Returns: Uint16Array; length == rows.length * cols.length / (numRowsCols * numRowsCols)
-function matrixProductUint8Float64(rows, cols, numColsRows) {
-  const numRows = (rows.length / numColsRows);
-  const numCols = (cols.length / numColsRows);
-  let ret = new Float64Array(numRows * numCols);
-  for (let i = 0; i < numRows; ++i) {
-    for (let j = 0; j < numCols; ++j) {
-      ret[numCols * i + j] = 0;
-      for (let k = 0; k < numColsRows; ++k) {
-        ret[numCols * i + j] += (rows[i * numColsRows + k] + cols[j * numColsRows + k]);
+  // Calculates the matrix product
+  // rows: Uint8Array
+  // numCols: length of each row in rows
+  // cols: Float64Array
+  // numRows: length of each column in cols
+  // Returns: Float64Array; length == rows.length * cols.length / (numRowsCols * numRowsCols)
+  function matrixProductUint8Float64_7BBE6F53(rows, cols, numColsRows) {
+    const numRows = (rows.length / numColsRows);
+    const numCols = (cols.length / numColsRows);
+    let ret = new Float64Array(numRows * numCols);
+    for (let i = 0; i < numRows; ++i) {
+      for (let j = 0; j < numCols; ++j) {
+        ret[numCols * i + j] = 0;
+        for (let k = 0; k < numColsRows; ++k) {
+          ret[numCols * i + j] += (rows[i * numColsRows + k] + cols[j * numColsRows + k]);
+        }
       }
     }
+    return ret;
   }
-  return ret;
-}
+  objMain.matrixProductUint8Float64 = newOptionFunction(matrixProductUint8Float64_7BBE6F53);
 
-// Test performance of dotProductUint8Uint8_1
-// numDataSize:
-// numIterations:
-function testPerformanceDotProductUint8Uint8_1(numDataSize, numIterations) {
-  const vec1 = new Uint8Array(numDataSize);
-  const vec2 = new Uint8Array(numDataSize);
-  let timeAcc = 0;
-  for (let i = 0; i < numIterations; ++i) {
-    crypto.getRandomValues(vec1);
-    crypto.getRandomValues(vec2);
-    const timeStart = performance.now();
-    let result = dotProductUint8Uint8_1(vec1, vec2);
-    const timeEnd = performance.now();
-    const timeElapsed = (timeEnd - timeStart);
-    timeAcc += timeElapsed;
-  }
-  console.log("Data size: ", numDataSize, "  Avg time: ", (timeAcc / numIterations), "ms");
-}
-
-// Test performance of dotProductUint8Uint8_2
-// numDataSize:
-// numIterations:
-function testPerformanceDotProductUint8Uint8_2(numDataSize, numIterations) {
-  const vec1 = new Uint8Array(numDataSize);
-  const vec2 = new Uint8Array(numDataSize);
-  let timeAcc = 0;
-  for (let i = 0; i < numIterations; ++i) {
-    crypto.getRandomValues(vec1);
-    crypto.getRandomValues(vec2);
-    const timeStart = performance.now();
-    let result = dotProductUint8Uint8_2(vec1, vec2);
-    const timeEnd = performance.now();
-    const timeElapsed = (timeEnd - timeStart);
-    timeAcc += timeElapsed;
-  }
-  console.log("Data size: ", numDataSize, "  Avg time: ", (timeAcc / numIterations), "ms");
-}
-
-// Test performance of dotProductUint8Float64
-// numDataSize:
-// numIterations:
-function testPerformanceDotProductUint8Float64(numDataSize, numIterations) {
-  const vec1 = new Uint8Array(numDataSize);
-  const vec2 = new Float64Array(numDataSize);
-  let timeAcc = 0;
-  for (let i = 0; i < numIterations; ++i) {
-    crypto.getRandomValues(vec1);
-    for (let j = 0; j < numDataSize; ++j) {
-      vec2[j] = Math.random();
+  // Calculates the matrix product
+  // rows: Float64Array
+  // numCols: length of each row in rows
+  // cols: Float64Array
+  // numRows: length of each column in cols
+  // Returns: Float64Array; length == rows.length * cols.length / (numRowsCols * numRowsCols)
+  function matrixProductFloat64Float64_23FA6ABA(rows, cols, numColsRows) {
+    const numRows = (rows.length / numColsRows);
+    const numCols = (cols.length / numColsRows);
+    let ret = new Float64Array(numRows * numCols);
+    for (let i = 0; i < numRows; ++i) {
+      for (let j = 0; j < numCols; ++j) {
+        ret[numCols * i + j] = 0;
+        for (let k = 0; k < numColsRows; ++k) {
+          ret[numCols * i + j] += (rows[i * numColsRows + k] + cols[j * numColsRows + k]);
+        }
+      }
     }
-    const timeStart = performance.now();
-    let result = dotProductUint8Float64(vec1, vec2);
-    const timeEnd = performance.now();
-    const timeElapsed = (timeEnd - timeStart);
-    timeAcc += timeElapsed;
+    return ret;
   }
-  console.log("Data size: ", numDataSize, "  Avg time: ", (timeAcc / numIterations), "ms");
-}
+  objMain.matrixProductFloat64Float64 = newOptionFunction(matrixProductFloat64Float64_23FA6ABA);
 
-function getRandomValues(typedArray) {
-  const maxLength = 65536 / typedArray.BYTES_PER_ELEMENT;
-  const numLoops = typedArray.length / maxLength;
-  for (let i = 0; i < numLoops; ++i) {
-    crypto.getRandomValues(typedArray.subarray(maxLength * i, maxLength * (i + 1)));
-  }
-}
-
-// Test performance of matrixProductUint8Uint8_1
-// numDataSize:
-// numIterations:
-function testPerformanceMatrixProductUint8Uint8_1(numDataSize, numIterations) {
-  const matrix1 = new Uint8Array(numDataSize * numDataSize);
-  const matrix2 = new Uint8Array(numDataSize * numDataSize);
-  let timeRandomAcc = 0;
-  let timeAcc = 0;
-  for (let i = 0; i < numIterations; ++i) {
-    const timeRandomStart = performance.now();
-    getRandomValues(matrix1);
-    getRandomValues(matrix2);
-    const timeRandomEnd = performance.now();
-    const timeRandomElapsed = (timeRandomEnd - timeRandomStart) / 2;
-    timeRandomAcc += timeRandomElapsed;
-    const timeStart = performance.now();
-    let result = matrixProductUint8Uint8_1(matrix1, matrix2, numDataSize);
-    const timeEnd = performance.now();
-    const timeElapsed = (timeEnd - timeStart);
-    timeAcc += timeElapsed;
-  }
-  console.log("Data size: ", numDataSize, "  Avg random time: ", (timeRandomAcc / numIterations), "ms");
-  console.log("Data size: ", numDataSize, "  Avg time: ", (timeAcc / numIterations), "ms");
-}
-
-// Test performance of matrixProductUint8Uint8_2
-// numDataSize:
-// numIterations:
-function testPerformanceMatrixProductUint8Uint8_2(numDataSize, numIterations) {
-  const matrix1 = new Uint8Array(numDataSize * numDataSize);
-  const matrix2 = new Uint8Array(numDataSize * numDataSize);
-  let timeRandomAcc = 0;
-  let timeAcc = 0;
-  for (let i = 0; i < numIterations; ++i) {
-    const timeRandomStart = performance.now();
-    getRandomValues(matrix1);
-    getRandomValues(matrix2);
-    const timeRandomEnd = performance.now();
-    const timeRandomElapsed = (timeRandomEnd - timeRandomStart) / 2;
-    timeRandomAcc += timeRandomElapsed;
-    const timeStart = performance.now();
-    let result = matrixProductUint8Uint8_2(matrix1, matrix2, numDataSize);
-    const timeEnd = performance.now();
-    const timeElapsed = (timeEnd - timeStart);
-    timeAcc += timeElapsed;
-  }
-  console.log("Data size: ", numDataSize, "  Avg random time: ", (timeRandomAcc / numIterations), "ms");
-  console.log("Data size: ", numDataSize, "  Avg time: ", (timeAcc / numIterations), "ms");
-}
-
-// Test performance of fnTestDefiniteLoopCall
-// numDataSize:
-// numIterations:
-function testPerformanceDefiniteLoopCall(numDataSize, numIterations) {
-  let timeAcc = 0;
-  for (let i = 0; i < numIterations; ++i) {
-    const timeStart = performance.now();
-    let result = fnTestDefiniteLoopCall(numDataSize);
-    const timeEnd = performance.now();
-    const timeElapsed = (timeEnd - timeStart);
-    timeAcc += timeElapsed;
-  }
-  console.log("Data size: ", numDataSize, "  Avg time: ", (timeAcc / numIterations), "ms");
-}
-
-// Test performance of fnTestDefiniteLoopBuiltin
-// numDataSize:
-// numIterations:
-function testPerformanceDefiniteLoopBuiltin(numDataSize, numIterations) {
-  let timeAcc = 0;
-  for (let i = 0; i < numIterations; ++i) {
-    const timeStart = performance.now();
-    let result = fnTestDefiniteLoopBuiltin(numDataSize);
-    const timeEnd = performance.now();
-    const timeElapsed = (timeEnd - timeStart);
-    timeAcc += timeElapsed;
-  }
-  console.log("Data size: ", numDataSize, "  Avg time: ", (timeAcc / numIterations), "ms");
-}
-
-// Test performance of fnTestForEachCall
-// numDataSize:
-// numIterations:
-function testPerformanceForEachCall(numDataSize, numIterations) {
-  let arr = new Array(numDataSize);
-  definiteLoop(setElem, numDataSize);
-  function setElem(index) {
-    arr[index] = Math.random();
-  }
-  let timeAcc = 0;
-  for (let i = 0; i < numIterations; ++i) {
-    const timeStart = performance.now();
-    let result = fnTestForEachCall(arr, testCallback);
-    const timeEnd = performance.now();
-    const timeElapsed = (timeEnd - timeStart);
-    timeAcc += timeElapsed;
-  }
-  console.log("Data size: ", numDataSize, "  Avg time: ", (timeAcc / numIterations), "ms");
-  function testCallback(elem, index, array) {
-    let result = elem * index;
-  }
-}
-
-// Test performance of fnTestForEachBuiltin
-// numDataSize:
-// numIterations:
-function testPerformanceForEachBuiltin(numDataSize, numIterations) {
-  let arr = new Array(numDataSize);
-  definiteLoop(setElem, numDataSize);
-  function setElem(index) {
-    arr[index] = Math.random();
-  }
-  let timeAcc = 0;
-  for (let i = 0; i < numIterations; ++i) {
-    const timeStart = performance.now();
-    let result = fnTestForEachBuiltin(arr, testCallback);
-    const timeEnd = performance.now();
-    const timeElapsed = (timeEnd - timeStart);
-    timeAcc += timeElapsed;
-  }
-  console.log("Data size: ", numDataSize, "  Avg time: ", (timeAcc / numIterations), "ms");
-  function testCallback(elem, index, array) {
-    let result = elem * index;
-  }
-}
-
-function samplePerformance() {
-  console.log("dotProductUint8Uint8_1");
-  testPerformanceDotProductUint8Uint8_1(1000, 1000);
-  testPerformanceDotProductUint8Uint8_1(2000, 1000);
-  testPerformanceDotProductUint8Uint8_1(5000, 1000);
-  testPerformanceDotProductUint8Uint8_1(10000, 1000);
-  testPerformanceDotProductUint8Uint8_1(20000, 1000);
-  testPerformanceDotProductUint8Uint8_1(50000, 1000);
-  console.log("dotProductUint8Uint8_2");
-  testPerformanceDotProductUint8Uint8_2(1000, 1000);
-  testPerformanceDotProductUint8Uint8_2(2000, 1000);
-  testPerformanceDotProductUint8Uint8_2(5000, 1000);
-  testPerformanceDotProductUint8Uint8_2(10000, 1000);
-  testPerformanceDotProductUint8Uint8_2(20000, 1000);
-  testPerformanceDotProductUint8Uint8_2(50000, 1000);
-  console.log("dotProductUint8Float64");
-  testPerformanceDotProductUint8Float64(1000, 1000);
-  testPerformanceDotProductUint8Float64(2000, 1000);
-  testPerformanceDotProductUint8Float64(5000, 1000);
-  testPerformanceDotProductUint8Float64(10000, 1000);
-  testPerformanceDotProductUint8Float64(20000, 1000);
-  testPerformanceDotProductUint8Float64(50000, 1000);
-  console.log("testDefiniteLoopBuiltin");
-  testPerformanceDefiniteLoopBuiltin(5000, 1000);
-  testPerformanceDefiniteLoopBuiltin(10000, 1000);
-  console.log("testDefiniteLoopCall");
-  testPerformanceDefiniteLoopCall(5000, 1000);
-  testPerformanceDefiniteLoopCall(10000, 1000);
-  console.log("testForEachBuiltin");
-  testPerformanceForEachBuiltin(5000, 1000);
-  testPerformanceForEachBuiltin(10000, 1000);
-  console.log("testForEachCall");
-  testPerformanceForEachCall(5000, 1000);
-  testPerformanceForEachCall(10000, 1000);
-  console.log("matrixProductUint8Uint8_1");
-  testPerformanceMatrixProductUint8Uint8_1(10, 1000);
-  testPerformanceMatrixProductUint8Uint8_1(20, 1000);
-  testPerformanceMatrixProductUint8Uint8_1(50, 100);
-  testPerformanceMatrixProductUint8Uint8_1(100, 100);
-  testPerformanceMatrixProductUint8Uint8_1(200, 10);
-  console.log("matrixProductUint8Uint8_2");
-  testPerformanceMatrixProductUint8Uint8_2(10, 1000);
-  testPerformanceMatrixProductUint8Uint8_2(20, 1000);
-  testPerformanceMatrixProductUint8Uint8_2(50, 100);
-  testPerformanceMatrixProductUint8Uint8_2(100, 100);
-  testPerformanceMatrixProductUint8Uint8_2(200, 10);
-}
-samplePerformance();
+  return objMain;
+})();
