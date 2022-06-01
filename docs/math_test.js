@@ -182,18 +182,14 @@ function testPerformanceForEachCall(numDataSize, numIterations) {
   function setElem(index) {
     arr[index] = Math.random();
   }
-  let timeAcc = 0;
-  for (let i = 0; i < numIterations; ++i) {
-    const timeStart = performance.now();
-    let result = fnTestForEachCall(arr, testCallback);
-    const timeEnd = performance.now();
-    const timeElapsed = (timeEnd - timeStart);
-    timeAcc += timeElapsed;
-  }
-  console.log("Data size: ", numDataSize, "  Avg time: ", (timeAcc / numIterations), "ms");
   function testCallback(elem, index, array) {
     let result = elem * index;
   }
+  function createArguments() {
+    return [arr, testCallback];
+  }
+  const avgRuntime = testRuntime(fnTestForEachCall, createArguments, numIterations);
+  console.log("Data size: ", numDataSize, "  Avg time: ", avgRuntime, "ms");
 }
 
 // Test performance of fnTestForEachBuiltin
@@ -205,18 +201,14 @@ function testPerformanceForEachBuiltin(numDataSize, numIterations) {
   function setElem(index) {
     arr[index] = Math.random();
   }
-  let timeAcc = 0;
-  for (let i = 0; i < numIterations; ++i) {
-    const timeStart = performance.now();
-    let result = fnTestForEachBuiltin(arr, testCallback);
-    const timeEnd = performance.now();
-    const timeElapsed = (timeEnd - timeStart);
-    timeAcc += timeElapsed;
-  }
-  console.log("Data size: ", numDataSize, "  Avg time: ", (timeAcc / numIterations), "ms");
   function testCallback(elem, index, array) {
     let result = elem * index;
   }
+  function createArguments() {
+    return [arr, testCallback];
+  }
+  const avgRuntime = testRuntime(fnTestForEachBuiltin, createArguments, numIterations);
+  console.log("Data size: ", numDataSize, "  Avg time: ", avgRuntime, "ms");
 }
 
 function samplePerformance() {
